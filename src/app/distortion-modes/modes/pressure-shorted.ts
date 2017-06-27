@@ -2,7 +2,7 @@ import { DistortionMode } from '../distortion-mode';
 import { MaterialClass } from '../../materials/material-class.enum';
 import { ModeApi } from '../mode-api';
 import { ModelValueOverride } from '../model-value-override';
-import { PlateModel } from '../../plate-renderer/plate-model';
+import { PlateDistortionModel } from '../../physics-core/plate-distortion-model';
 import { Constants } from '../../physics-core/constants';
 import { ModeApiValue } from '../mode-api-value.enum';
 
@@ -13,7 +13,7 @@ export class PressureShorted implements DistortionMode {
   api: ModeApi;
   supportedClasses: MaterialClass[];
 
-  distortModel(model: PlateModel, time: number) {
+  distortModel(model: PlateDistortionModel, time: number) {
     if (model.material.type === MaterialClass.Ceramic_TP) {
       model.voltage = 0;
       model.strain[2][2] = -model.externalForces / (model.material.c[2][2] * Math.pow(10, Constants.C_EXP));

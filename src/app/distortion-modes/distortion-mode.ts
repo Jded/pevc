@@ -1,5 +1,5 @@
 import { MaterialClass } from '../materials/material-class.enum';
-import { PlateModel } from '../plate-renderer/plate-model';
+import { PlateDistortionModel } from '../physics-core/plate-distortion-model';
 import { ModelValueOverride } from './model-value-override';
 import { ModeApi } from './mode-api';
 
@@ -9,5 +9,5 @@ export interface DistortionMode {
   override: ModelValueOverride;
   api: ModeApi;
   supportedClasses: MaterialClass[];
-  distortModel (model: PlateModel, time: number): void;
+  distortModel (model: PlateDistortionModel, time: number): void;
 }

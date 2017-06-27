@@ -1,12 +1,18 @@
 import { DistortionMode } from '../distortion-modes/distortion-mode';
 import { Material } from '../materials/material';
 import { BoxGeometry } from 'three'
-import { PiezoPlateGeometry } from './rendering-extensions/plate-geometry';
+import { PiezoPlateGeometry } from '../plate-renderer/rendering-extensions/plate-geometry';
+import { PressureOpen } from '../distortion-modes/modes/pressure-open';
+import { ModeApiValue } from '../distortion-modes/mode-api-value.enum';
+import { Constants } from './constants';
+import { CalculationHelper } from './calculation.helper';
+import { ModelValueOverride } from '../distortion-modes/model-value-override';
+import { isUndefined } from 'util';
 
-export class PlateModel {
+export class PlateDistortionModel {
   initTime: number;
+  time: number;
   timeExpansion: number;
-  linearExaggeration: number;
   harmonic: number;
   frequency: number;
   strain: number[][];
@@ -17,13 +23,17 @@ export class PlateModel {
   mode: DistortionMode;
   material: Material;
   voltage: number;
+  voltageOutput: number;
   externalForces: number;
+  linearExaggeration: number;
   box: BoxGeometry;
   basicGeometry: PiezoPlateGeometry;
   modifiedGeometry: PiezoPlateGeometry;
 
   constructor(initTime) {
+    // super();
     this.initTime = initTime;
+    this.time = initTime;
     this.timeExpansion = 10;
     this.linearExaggeration = 1;
     this.harmonic = 2;
@@ -39,7 +49,7 @@ export class PlateModel {
     this.resolution = [10, 50, 10];
     this.dimensions = [10, 1, 10];
     this.boundaryConditions = [];
-    this.mode = null; // pzCalculator.getDefaultMode();
+    this.mode = new PressureOpen();
     this.material = null; // pzMaterial.getMaterial('PZT5H');
     this.voltage = 0;
     this.externalForces = 1;
@@ -67,14 +77,14 @@ export class PlateModel {
   }
 
   updateTime(timestamp) {
-    /*if(pzCalculator.getModeSettings(this.mode).TIME === VARMODE.INPUT){
-      var time = timestamp - this.initTime;
-      pzCalculator.updateTime(this.mode,this,time);
+    if (this.mode.api.time === ModeApiValue.INPUT) {
+      const time = timestamp - this.initTime;
+      this.mode.distortModel(this, time);
       this.modifiedGeometry.verticesNeedUpdate = true;
-      $rootScope.$broadcast('pzTimeUpdate',timestamp);
+      // $rootScope.$broadcast('pzTimeUpdate',timestamp);
       return true;
     }
-    return false;*/
+    return false;
   }
 
   getScaledTime = function () {
@@ -83,31 +93,35 @@ export class PlateModel {
   }
 
   getValue(id: string) {
-    /*switch(id){
+    switch (id) {
       case 'VOLTAGE':
-        return this.voltageO;
-        break;
+        return this.voltageOutput;
       case 'PRESSURE':
         return this.externalForces;
-        break;
       case 'STRAIN':
         return this.strain;
-        break;
-      case TRACK.ELONGZ:
-        return getElongation (this.basicGeometry,this.modifiedGeometry,'z');
-        break;
-      case TRACK.ELONGY:
-        return getElongation (this.basicGeometry,this.modifiedGeometry,'y');
-        break;
-    }*/
+      case 'ELONGZ':
+        return CalculationHelper.getElongation (this.basicGeometry, this.modifiedGeometry, 'z');
+      case 'ELONGY':
+        return CalculationHelper.getElongation (this.basicGeometry, this.modifiedGeometry, 'y');
+    }
   }
 
+  setParameters (data: Map<string, any>) {
+    for (const prop in data) {
+      if (!isUndefined(this[prop])) {
+        this[prop] = data[prop];
+      }
+    }
+
+  }
 
   setOverrides() {
-    /*var that = this;
-    _.each(pzCalculator.getOverrides(this.mode), function(value,key){
-      that[key] = value;
-    })*/
+    for (const propKey in this.mode.override) {
+      if (this.mode.override[propKey]) {
+        this[propKey] = this.mode.override[propKey];
+      }
+    }
   }
 
 }

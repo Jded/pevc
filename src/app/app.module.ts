@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 import { MaterialEditorComponent } from './material-editor/material-editor.component';
 import { HomeComponent } from './home/home.component';
 import { UiComponentsModule } from './ui-components/ui-components.module';
+import { CoreModule } from './core/core.module';
 
 
 const appRoutes = [{ path: 'home', component: HomeComponent },
@@ -23,6 +24,7 @@ const appRoutes = [{ path: 'home', component: HomeComponent },
   imports: [
     BrowserModule,
     UiComponentsModule,
+    CoreModule,
     HomeModule,
     MaterialEditorModule,
     RouterModule.forRoot(appRoutes)

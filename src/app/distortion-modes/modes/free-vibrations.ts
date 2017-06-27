@@ -2,9 +2,16 @@ import { DistortionMode } from '../distortion-mode';
 import { MaterialClass } from '../../materials/material-class.enum';
 import { ModeApi } from '../mode-api';
 import { ModelValueOverride } from '../model-value-override';
-import { PlateModel } from '../../plate-renderer/plate-model';
+import { PlateDistortionModel } from '../../physics-core/plate-distortion-model';
 import { Constants } from '../../physics-core/constants';
 import { ModeApiValue } from '../mode-api-value.enum';
+import { CalculationHelper } from '../../physics-core/calculation.helper';
+
+class Cache {
+  frequency: number;
+  ksi: number;
+  class: MaterialClass;
+}
 
 export class FreeVibrations implements DistortionMode {
   modeId: string;
@@ -12,51 +19,104 @@ export class FreeVibrations implements DistortionMode {
   override: ModelValueOverride;
   api: ModeApi;
   supportedClasses: MaterialClass[];
+  calculationCache: Cache;
 
-  distortModel(model: PlateModel, time: number) {
+  distortModel(model: PlateDistortionModel, time: number) {
     if (model.material.type === MaterialClass.Ceramic_TP) {
-
-      const cepsilon = model.material.c[2][2] * model.material.epsilon[2][2] * Math.pow(10, Constants.C_EXP + Constants.EPSILON_EXP);
-      const ksqr = (model.material.e[2][2] * model.material.e[2][2]) / cepsilon;
-      const thickness = model.dimensions[1] / 1000;
-      const c33 = model.material.c[2][2] * Math.pow(10, Constants.C_EXP);
-
-      model.voltage = (thickness * model.externalForces * model.material.e[2][2]) / (cepsilon * (1 + ksqr));
-      model.strain[2][2] = -model.externalForces / (c33 * (1 + ksqr));
-      model.stress[0][0] = model.stress[1][1] = model.strain[2][2] * model.material.c[0][2] * Math.pow(10, Constants.C_EXP);
-      const exaggeration = Math.pow(10, model.linearExaggeration);
-      let correction = (1 + model.strain[2][2] * exaggeration);
-      if (correction < 0) {
-        correction = 0;
-      }
-      model.basicGeometry.vertices.forEach((source, index) => {
-        const target = model.modifiedGeometry.vertices[index];
-        target.z = source.z;
-        target.x = source.x;
-        target.y = source.y * correction;
-      })
+      this.distortCeramic(model, time)
+    } else {
+      this.distortCrystal(model, time)
     }
   }
 
+  distortCrystal(model: PlateDistortionModel, time: number) {
+    const initVoltage = 10;
+    const timeModifier = Math.pow(10, model.timeExpansion - 1);
+    if (!this.calculationCache) {
+      this.calculationCache = new Cache();
+      const cepsilon = model.material.c[5][5] * model.material.epsilon[1][1] * Math.pow(10, Constants.C_EXP + Constants.EPSILON_EXP);
+      const ksqr = (model.material.e[1][5] * model.material.e[1][5]) / cepsilon;
+      const h = model.dimensions[1] / 1000;
+      const c66 = model.material.c[5][5] * Math.pow(10, Constants.C_EXP);
+      if (model.harmonic % 2) {
+        const ksqr_t = ksqr / (1 + ksqr);
+        const ksi = CalculationHelper.getKsi(ksqr_t, h, model.harmonic);
+        this.calculationCache.ksi = ksi;
+        this.calculationCache.frequency = ksi * Math.sqrt((c66 * (1 + ksqr)) / model.material.density);
+      } else {
+        const coeff = Math.sqrt((c66 * (1 + ksqr)) / model.material.density);
+        this.calculationCache.frequency = (coeff * model.harmonic * Math.PI) / h;
+        this.calculationCache.ksi = model.harmonic * Math.PI / h;
+      }
+    }
+    model.frequency = this.calculationCache.frequency;
+
+    const constantAmplitude = 0.1 * model.dimensions[1] / model.dimensions[0];
+
+    model.basicGeometry.vertices.forEach((source, index) => {
+      const target = model.modifiedGeometry.vertices[index];
+      target.z = source.z;
+      target.x = source.x * (1 +
+        constantAmplitude * Math.cos((target.y / 1000) * this.calculationCache.ksi)
+        * Math.cos(this.calculationCache.frequency * time / (1000 * timeModifier)));
+      target.y = source.y;
+    })
+    model.voltageOutput = initVoltage * Math.cos(this.calculationCache.frequency * time / (1000 * timeModifier));
+  }
+
+
+  distortCeramic(model: PlateDistortionModel, time: number) {
+    const initVoltage = 10;
+    const h = model.dimensions[1] / 1000;
+    const timeModifier = Math.pow(10, model.timeExpansion - 1);
+    if (this.calculationCache === undefined) {
+      this.calculationCache = new Cache();
+      const cepsilon = model.material.c[2][2] * model.material.epsilon[2][2] * Math.pow(10, Constants.C_EXP + Constants.EPSILON_EXP);
+      const ksqr = (model.material.e[2][2] * model.material.e[2][2]) / cepsilon;
+      const c33 = model.material.c[2][2] * Math.pow(10, Constants.C_EXP);
+      if (!(model.harmonic % 2)) {
+        const ksqr_t = ksqr / (1 + ksqr);
+        const ksi = CalculationHelper.getKsi(ksqr_t, h, model.harmonic);
+        this.calculationCache.ksi = ksi;
+        this.calculationCache.frequency = ksi * Math.sqrt(c33 * (1 + ksqr) / model.material.density);
+      } else {
+        const coeff = Math.sqrt((c33 * (1 + ksqr)) / model.material.density);
+        this.calculationCache.frequency = (coeff * model.harmonic * Math.PI) / h;
+        this.calculationCache.ksi = model.harmonic * Math.PI / h;
+      }
+    }
+
+    model.frequency = this.calculationCache.frequency;
+
+    const constantAmplitude = 0.5 * model.dimensions[1] / model.dimensions[0];
+    model.basicGeometry.vertices.forEach((source, index) => {
+      const target = model.modifiedGeometry.vertices[index];
+      target.z = source.z;
+      target.x = source.x;
+      target.y = source.y * (1 +
+        0.1 * Math.cos(source.y / 1000 * this.calculationCache.ksi) *
+        Math.cos(this.calculationCache.frequency * time / (1000 * timeModifier)));
+    });
+    model.voltageOutput = initVoltage * Math.cos(this.calculationCache.frequency * time / (1000 * timeModifier));
+
+  }
+
   constructor() {
-    this.modeId = 'PRESSURE_SHORTED';
-    this.modeName = 'Pressure on plate, shorted electrodes';
-    this.supportedClasses = [MaterialClass.Ceramic_TP];
+    this.modeId = 'FREE_VIBRATIONS';
+    this.modeName = 'Free vibrations (dynamic)';
+    this.supportedClasses = [MaterialClass.Crystal, MaterialClass.Ceramic_TP];
     this.override = new ModelValueOverride();
-    this.override.externalForces = 100;
-    this.override.linearExaggeration = 9;
-    this.override.strain = [[0, 0, 0],
-      [0, 0, 0],
-      [0, 0, 0]];
+    this.override.timeExpansion = 8;
+    this.override.linearExaggeration = 1;
 
     this.api = new ModeApi();
-    this.api.pressure = ModeApiValue.INPUT;
+    this.api.pressure = ModeApiValue.IGNORE;
     this.api.voltage = ModeApiValue.OUTPUT;
-    this.api.frequency = ModeApiValue.IGNORE;
-    this.api.time = ModeApiValue.IGNORE;
+    this.api.frequency = ModeApiValue.OUTPUT;
+    this.api.time = ModeApiValue.INPUT;
     this.api.strain = ModeApiValue.OUTPUT;
-    this.api.harmonicNumber = ModeApiValue.IGNORE;
-    this.api.stretch = ModeApiValue.INPUT;
+    this.api.harmonicNumber = ModeApiValue.INPUT;
+    this.api.stretch = ModeApiValue.IGNORE;
 
   }
 }

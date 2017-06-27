@@ -1,25 +1,42 @@
-<p>
-  plate-settings works!
-  plate-settings works!
-  plate-settings works!
-  plate-settings works!
-  plate-settings works!
-  plate-settings works!
-  plate-settings works!
-  plate-settings works!
-  plate-settings works!
-  plate-settings works!
-  plate-settings works!
-  plate-settings works!
-  plate-settings works!
-  plate-settings works!
-  plate-settings works!
-  plate-settings works!
-  plate-settings works!
-  plate-settings works!
-  plate-settings works!
-  plate-settings works!
-  plate-settings works!
-  plate-settings works!
-  plate-settings works!
-</p>
+<div fxLayout="row" fxLayout.lt-lg="column">
+  <form [formGroup] = "plateParameters" novalidate>
+    <div fxFlex = "1 1 100%">
+      <label>Plate X:
+        <input class="form-control" formControlName="plateX" required/>
+        <div *ngIf = "formErrors['plateX']">
+          <p *ngFor = "let error of formErrors['plateX']">{{error | errorTranslator:10000}}</p>
+        </div>
+      </label>
+      <label>Plate Y:
+        <input class="form-control" formControlName="plateY" required/>
+        <div *ngIf = "formErrors['plateY']">
+          <p *ngFor = "let error of formErrors['plateY']">{{error | errorTranslator:10000}}</p>
+        </div>
+      </label>
+      <label>Plate Z:
+        <input class="form-control" formControlName="plateZ" required/>
+        <div *ngIf = "formErrors['plateZ']">
+          <p *ngFor = "let error of formErrors['plateZ']">{{error | errorTranslator:10000}}</p>
+        </div>
+      </label>
+      <label>Resolution X:
+        <input class="form-control" formControlName="resolutionX" required/>
+        <div *ngIf = "formErrors['resolutionX']">
+          <p *ngFor = "let error of formErrors['resolutionX']">{{error | errorTranslator:1000}}</p>
+        </div>
+      </label>
+      <label>Resolution Y:
+        <input class="form-control" formControlName="resolutionY" required/>
+        <div *ngIf = "formErrors['resolutionY']">
+          <p *ngFor = "let error of formErrors['resolutionY']">{{error | errorTranslator:1000}}</p>
+        </div>
+      </label>
+      <label>Resolution Z:
+        <input class="form-control" formControlName="resolutionZ" required/>
+        <div *ngIf = "formErrors['resolutionZ']">
+          <p *ngFor = "let error of formErrors['resolutionZ']">{{error | errorTranslator:1000}}</p>
+        </div>
+      </label>
+    </div>
+  </form>
+</div>
