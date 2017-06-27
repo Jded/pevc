@@ -1,8 +1,12 @@
 import { Component, ElementRef, OnInit } from '@angular/core';
 
 import { PerspectiveCamera, BoxGeometry } from '@types/three'
-import { PlateDistortionModel } from '../physics-core/plate-distortion-model';
+import { PlateDistortionModel } from '../core/plate-distortion-model';
 import { PlateRenderer } from './plate-renderer';
+import { Store } from '@ngrx/store';
+import { PlateState } from '../core/plate-state';
+import { Observable } from 'rxjs/Observable';
+import { PlateService } from '../core/plate.service';
 
 @Component({
   selector: 'pevc-plate-renderer',
@@ -13,10 +17,10 @@ export class PlateRendererComponent implements OnInit {
 
   plateModel: PlateDistortionModel;
   renderer: PlateRenderer;
-
-  constructor(private element: ElementRef) {
-    this.plateModel = new PlateDistortionModel(Date.now());
-
+  plateState$: Observable<PlateState>;
+  constructor(private element: ElementRef, private store: Store<PlateState>, plateService: PlateService) {
+    this.plateState$ = store.select('plate');
+    this.plateModel = plateService.activePlate;
   }
 
   ngOnInit() {
@@ -24,6 +28,11 @@ export class PlateRendererComponent implements OnInit {
     this.element.nativeElement.append(this.renderer.getDomElement());
     this.renderer.setupScene();
     this.renderer.render();
+    this.plateState$.subscribe((state: PlateState) => {
+      this.plateModel.consumeState(state);
+      this.renderer.swapGeometry();
+      this.renderer.render();
+    })
   }
 
 }

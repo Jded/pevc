@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
+import { PlateDistortionModel } from './plate-distortion-model';
 
 @Injectable()
 export class PlateService {
-
-  constructor() { }
-
+  activePlate: PlateDistortionModel
+  constructor() {
+    this.activePlate = new PlateDistortionModel(Date.now())
+  }
 }

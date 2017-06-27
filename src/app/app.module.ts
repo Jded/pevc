@@ -8,6 +8,8 @@ import { MaterialEditorComponent } from './material-editor/material-editor.compo
 import { HomeComponent } from './home/home.component';
 import { UiComponentsModule } from './ui-components/ui-components.module';
 import { CoreModule } from './core/core.module';
+import { StoreModule } from '@ngrx/store';
+import { plateReducer } from './reducers/plate.reducer';
 
 
 const appRoutes = [{ path: 'home', component: HomeComponent },
@@ -27,7 +29,8 @@ const appRoutes = [{ path: 'home', component: HomeComponent },
     CoreModule,
     HomeModule,
     MaterialEditorModule,
-    RouterModule.forRoot(appRoutes)
+    RouterModule.forRoot(appRoutes),
+    StoreModule.provideStore({ plate: plateReducer })
   ],
   providers: [],
   bootstrap: [AppComponent]

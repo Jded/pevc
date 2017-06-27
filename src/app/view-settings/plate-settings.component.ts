@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
-import { PlateDistortionModel } from '../physics-core/plate-distortion-model';
-import { Store } from '@ngrx/store';
+import { PlateDistortionModel } from '../core/plate-distortion-model';
+import { Action, Store } from '@ngrx/store';
+import { UpdateDimensionAction } from '../actions/plate-model.actions';
+import { PlateState } from '../core/plate-state';
 
 @Component({
   selector: 'pevc-plate-settings',
@@ -11,7 +13,7 @@ import { Store } from '@ngrx/store';
 })
 export class PlateSettingsComponent implements OnInit {
 
-  plateModel$: Observable<PlateDistortionModel>;
+  plateState$: Observable<PlateState>;
 
   controlsConfig: object = {
     plateX: ['', [Validators.required, Validators.min(0), Validators.max(10000)] ],
@@ -26,20 +28,28 @@ export class PlateSettingsComponent implements OnInit {
 
   plateParameters: FormGroup;
 
-  constructor(private fb: FormBuilder, private store: Store<PlateDistortionModel>) {
-
+  constructor(private fb: FormBuilder, private store: Store<PlateState>) {
+    this.plateState$ = store.select('plate');
     this.plateParameters = this.fb.group(this.controlsConfig)
     this.plateParameters.valueChanges.subscribe(data => this.valueChange(data));
+    this.plateState$.first().subscribe((initState: PlateState) => {
+      this.plateParameters.setValue({
+        plateX: initState.dimensions[0],
+        plateY: initState.dimensions[1],
+        plateZ: initState.dimensions[2],
+        resolutionX: initState.resolution[0],
+        resolutionY: initState.resolution[1],
+        resolutionZ: initState.resolution[2]
+      })
+    })
   }
 
-  valueChange(data?: any) {
-    const plateForm = this.plateParameters;
+  updateValidation(plateForm) {
     for (const field in this.controlsConfig) {
       if (this.controlsConfig.hasOwnProperty(field)) {
         this.formErrors[field] = null;
         const formField = plateForm.get(field);
         if (formField && !formField.valid) {
-          console.log(formField.errors)
           this.formErrors[field] = Object.keys(formField.errors)
             .map(k => { if (formField.errors[k]) {return k; }})
             .filter( (k) => k )
@@ -47,7 +57,19 @@ export class PlateSettingsComponent implements OnInit {
           this.formErrors[field] = null;
         }
       }
+    }
+  }
 
+  updateModel(value) {
+    const action: Action = new UpdateDimensionAction(value);
+    this.store.dispatch(action);
+  }
+
+  valueChange(data?: any) {
+    const plateForm = this.plateParameters;
+    this.updateValidation(plateForm);
+    if (plateForm.valid) {
+      this.updateModel(plateForm.value)
     }
   }
 

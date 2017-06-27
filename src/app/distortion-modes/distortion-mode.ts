@@ -1,5 +1,5 @@
 import { MaterialClass } from '../materials/material-class.enum';
-import { PlateDistortionModel } from '../physics-core/plate-distortion-model';
+import { PlateDistortionModel } from '../core/plate-distortion-model';
 import { ModelValueOverride } from './model-value-override';
 import { ModeApi } from './mode-api';
 

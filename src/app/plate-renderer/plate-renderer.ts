@@ -6,7 +6,7 @@ import {
 import { OrbitControls} from 'three-orbitcontrols-ts'
 
 import { Dir } from '@angular/material';
-import { PlateDistortionModel } from '../physics-core/plate-distortion-model';
+import { PlateDistortionModel } from '../core/plate-distortion-model';
 
 import * as THREE from 'three'; // hack for supplying OrbitControls with proper class camera
 

@@ -4,22 +4,34 @@ import { BoxGeometry } from 'three'
 import { PiezoPlateGeometry } from '../plate-renderer/rendering-extensions/plate-geometry';
 import { PressureOpen } from '../distortion-modes/modes/pressure-open';
 import { ModeApiValue } from '../distortion-modes/mode-api-value.enum';
-import { Constants } from './constants';
-import { CalculationHelper } from './calculation.helper';
+import { Constants } from '../physics-core/constants';
+import { CalculationHelper } from '../physics-core/calculation.helper';
 import { ModelValueOverride } from '../distortion-modes/model-value-override';
 import { isUndefined } from 'util';
+import { PlateState } from './plate-state';
 
-export class PlateDistortionModel {
+export class PlateDistortionModel extends PlateState{
+
+  public static initState: PlateState = {
+    timeExpansion: 10,
+    linearExaggeration:  1,
+    harmonic:  2,
+    frequency:  0,
+    strain:  [[0, 0, 0],
+      [0, 0, 0],
+      [0, 0, 0]
+    ],
+    stress:  [[0, 0, 0],
+      [0, 0, 0],
+      [0, 0, 0]
+    ],
+    resolution:  [10, 50, 10],
+    dimensions:  [10, 1, 10],
+    boundaryConditions:  [],
+  }
+
   initTime: number;
   time: number;
-  timeExpansion: number;
-  harmonic: number;
-  frequency: number;
-  strain: number[][];
-  stress: number[][];
-  resolution: number[];
-  dimensions: number[];
-  boundaryConditions: number[];
   mode: DistortionMode;
   material: Material;
   voltage: number;
@@ -31,23 +43,10 @@ export class PlateDistortionModel {
   modifiedGeometry: PiezoPlateGeometry;
 
   constructor(initTime) {
-    // super();
+    super();
+    Object.assign(this, PlateDistortionModel.initState);
     this.initTime = initTime;
     this.time = initTime;
-    this.timeExpansion = 10;
-    this.linearExaggeration = 1;
-    this.harmonic = 2;
-    this.frequency = 0;
-    this.strain = [[0, 0, 0],
-      [0, 0, 0],
-      [0, 0, 0]
-    ];
-    this.stress = [[0, 0, 0],
-      [0, 0, 0],
-      [0, 0, 0]
-    ];
-    this.resolution = [10, 50, 10];
-    this.dimensions = [10, 1, 10];
     this.boundaryConditions = [];
     this.mode = new PressureOpen();
     this.material = null; // pzMaterial.getMaterial('PZT5H');
@@ -105,6 +104,11 @@ export class PlateDistortionModel {
       case 'ELONGY':
         return CalculationHelper.getElongation (this.basicGeometry, this.modifiedGeometry, 'y');
     }
+  }
+
+  consumeState(state: PlateState) {
+    Object.assign(this, state);
+    this.fillGeometries();
   }
 
   setParameters (data: Map<string, any>) {

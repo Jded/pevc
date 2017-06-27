@@ -2,7 +2,7 @@ import { DistortionMode } from '../distortion-mode';
 import { MaterialClass } from '../../materials/material-class.enum';
 import { ModeApi } from '../mode-api';
 import { ModelValueOverride } from '../model-value-override';
-import { PlateDistortionModel } from '../../physics-core/plate-distortion-model';
+import { PlateDistortionModel } from '../../core/plate-distortion-model';
 import { Constants } from '../../physics-core/constants';
 import { ModeApiValue } from '../mode-api-value.enum';
 import { CalculationHelper } from '../../physics-core/calculation.helper';
