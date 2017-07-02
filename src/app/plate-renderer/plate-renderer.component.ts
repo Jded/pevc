@@ -1,10 +1,10 @@
 import { Component, ElementRef, OnInit } from '@angular/core';
 
 import { PerspectiveCamera, BoxGeometry } from '@types/three'
-import { PlateDistortionModel } from '../core/plate-distortion-model';
+import { PlateDistortionModel } from '../physics-core/plate-distortion-model';
 import { PlateRenderer } from './plate-renderer';
 import { Store } from '@ngrx/store';
-import { PlateState } from '../core/plate-state';
+import { PlateState } from '../physics-core/plate-state';
 import { Observable } from 'rxjs/Observable';
 import { PlateService } from '../core/plate.service';
 

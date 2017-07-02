@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { PlateDistortionModel } from './plate-distortion-model';
+import { PlateDistortionModel } from '../physics-core/plate-distortion-model';
 
 @Injectable()
 export class PlateService {

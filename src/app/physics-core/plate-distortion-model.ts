@@ -4,13 +4,13 @@ import { BoxGeometry } from 'three'
 import { PiezoPlateGeometry } from '../plate-renderer/rendering-extensions/plate-geometry';
 import { PressureOpen } from '../distortion-modes/modes/pressure-open';
 import { ModeApiValue } from '../distortion-modes/mode-api-value.enum';
-import { Constants } from '../physics-core/constants';
-import { CalculationHelper } from '../physics-core/calculation.helper';
+import { Constants } from './constants';
+import { CalculationHelper } from './calculation.helper';
 import { ModelValueOverride } from '../distortion-modes/model-value-override';
 import { isUndefined } from 'util';
 import { PlateState } from './plate-state';
 
-export class PlateDistortionModel extends PlateState{
+export class PlateDistortionModel extends PlateState {
 
   public static initState: PlateState = {
     timeExpansion: 10,

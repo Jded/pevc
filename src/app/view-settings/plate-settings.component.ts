@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
-import { PlateDistortionModel } from '../core/plate-distortion-model';
+import { PlateDistortionModel } from '../physics-core/plate-distortion-model';
 import { Action, Store } from '@ngrx/store';
 import { UpdateDimensionAction } from '../actions/plate-model.actions';
-import { PlateState } from '../core/plate-state';
+import { PlateState } from '../physics-core/plate-state';
 
 @Component({
   selector: 'pevc-plate-settings',

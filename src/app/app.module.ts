@@ -10,6 +10,7 @@ import { UiComponentsModule } from './ui-components/ui-components.module';
 import { CoreModule } from './core/core.module';
 import { StoreModule } from '@ngrx/store';
 import { plateReducer } from './reducers/plate.reducer';
+import { materialOptionsReducer } from './reducers/material-options.reducer';
 
 
 const appRoutes = [{ path: 'home', component: HomeComponent },
@@ -30,7 +31,10 @@ const appRoutes = [{ path: 'home', component: HomeComponent },
     HomeModule,
     MaterialEditorModule,
     RouterModule.forRoot(appRoutes),
-    StoreModule.provideStore({ plate: plateReducer })
+    StoreModule.provideStore({
+      plate: plateReducer,
+      materialOptions: materialOptionsReducer
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]

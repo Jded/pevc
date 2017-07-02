@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialEditorComponent } from './material-editor.component';
+import { MaterialModule } from '@angular/material';
 
 @NgModule({
   imports: [

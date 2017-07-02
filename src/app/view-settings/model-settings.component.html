@@ -1,21 +1,22 @@
-<p>
-  model-settings works!
-  model-settings works!
-  model-settings works!
-  model-settings works!
-  model-settings works!
-  model-settings works!
-  model-settings works!
-  model-settings works!
-  model-settings works!
-  model-settings works!
-  model-settings works!
-  model-settings works!
-  model-settings works!
-  model-settings works!
-  model-settings works!
-  model-settings works!
-  model-settings works!
-  model-settings works!
-  model-settings works!
-</p>
+<div fxLayout="row" fxLayout.lt-lg="column">
+  <form [formGroup] = "modelSettings" novalidate>
+    <div fxFlex = "1 1 100%">
+      <label>Material:
+        <select class="form-control" formControlName="material" required>
+          <option *ngFor="let material of materialOptions$ | async" [value]="material['id']">{{material['name']}}</option>
+        </select>
+        <div *ngIf = "formErrors['material']">
+          <p *ngFor = "let error of formErrors['material']">{{error | errorTranslator:10000}}</p>
+        </div>
+      </label>
+      <label>Simulation mode:
+        <select type="number" class="form-control" formControlName="mode" required>
+          <option *ngFor="let mode of modeOptions" [value]="mode['id']">{{mode['name']}}</option>
+        </select>
+        <div *ngIf = "formErrors['mode']">
+          <p *ngFor = "let error of formErrors['mode']">{{error | errorTranslator:10000}}</p>
+        </div>
+      </label>
+    </div>
+  </form>
+</div>

@@ -1,6 +1,6 @@
-import { PlateDistortionModel } from '../core/plate-distortion-model';
+import { PlateDistortionModel } from '../physics-core/plate-distortion-model';
 import { PlateActionTypes } from '../actions/plate-model.actions';
-import { PlateState } from '../core/plate-state';
+import { PlateState } from '../physics-core/plate-state';
 import { Action } from '@ngrx/store';
 
 export const plateReducer = (state: PlateState = Object.assign({}, PlateDistortionModel.initState), action: Action) => {

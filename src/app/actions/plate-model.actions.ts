@@ -1,7 +1,8 @@
 import { Action } from '@ngrx/store';
 
 export const PlateActionTypes = {
-  UPDATE_DIMENSIONS: 'UPDATE_DIMENSIONS'
+  UPDATE_DIMENSIONS: 'UPDATE_DIMENSIONS',
+  UPDATE_MATERIAL: 'UPDATE_MATERIAL'
 }
 
 export class UpdateDimensionAction implements Action {
