@@ -64,23 +64,18 @@ export class PlateDistortionModel extends PlateState {
     // if(existing){$rootScope.$broadcast("pzExchangeGeometry");}
   }
 
-  update(timestamp) {
-    const time: number = timestamp - this.initTime;
-    // pzCalculator.updateModelData(this.mode,this,time);
-    this.modifiedGeometry.verticesNeedUpdate = true;
-    // $rootScope.$broadcast('pzPlateUpdate',timestamp);
-  }
-
   resetTime(time) {
     this.initTime = time;
   }
 
+  distortModel() {
+    this.mode.distortModel(this, this.time);
+    this.modifiedGeometry.verticesNeedUpdate = true;
+  }
+
   updateTime(timestamp) {
     if (this.mode.api.time === ModeApiValue.INPUT) {
-      const time = timestamp - this.initTime;
-      this.mode.distortModel(this, time);
-      this.modifiedGeometry.verticesNeedUpdate = true;
-      // $rootScope.$broadcast('pzTimeUpdate',timestamp);
+      this.time = timestamp - this.initTime;
       return true;
     }
     return false;
@@ -111,9 +106,10 @@ export class PlateDistortionModel extends PlateState {
     this.fillGeometries();
   }
 
-  setParameters (data: Map<string, any>) {
-    for (const prop in data) {
-      if (!isUndefined(this[prop])) {
+  setParameters (data: ModelValueOverride) {
+    if (!this.mode) { return; }
+    for (const prop in this.mode.api) {
+      if (this.mode.api[prop] === ModeApiValue.INPUT) {
         this[prop] = data[prop];
       }
     }

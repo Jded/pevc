@@ -11,6 +11,15 @@ import { CoreModule } from './core/core.module';
 import { StoreModule } from '@ngrx/store';
 import { plateReducer } from './reducers/plate.reducer';
 import { materialOptionsReducer } from './reducers/material-options.reducer';
+import { materialActiveReducer } from './reducers/material-active.reducer';
+import { materialEditedReducer } from './reducers/material-edited.reducer';
+import { modeReducer } from './reducers/mode.reducer';
+import { EffectsModule } from '@ngrx/effects';
+import { MaterialModeInteractionEffects } from './effects/material-mode-interaction.effect';
+import { renderReducer } from './reducers/render.reducer';
+import { RenderTriggerEffects } from './effects/render-trigger.effect';
+import { modeApiReducer } from './reducers/mode-api.reducer';
+import { modelInputsReducer } from './reducers/model-inputs.reducer';
 
 
 const appRoutes = [{ path: 'home', component: HomeComponent },
@@ -33,8 +42,16 @@ const appRoutes = [{ path: 'home', component: HomeComponent },
     RouterModule.forRoot(appRoutes),
     StoreModule.provideStore({
       plate: plateReducer,
-      materialOptions: materialOptionsReducer
-    })
+      render: renderReducer,
+      materialOptions: materialOptionsReducer,
+      materialActive: materialActiveReducer,
+      materialEdited: materialEditedReducer,
+      mode: modeReducer,
+      modeApi: modeApiReducer,
+      modelInput: modelInputsReducer
+    }),
+    EffectsModule.run(MaterialModeInteractionEffects),
+    EffectsModule.run(RenderTriggerEffects)
   ],
   providers: [],
   bootstrap: [AppComponent]

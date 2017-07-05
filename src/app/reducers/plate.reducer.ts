@@ -3,7 +3,9 @@ import { PlateActionTypes } from '../actions/plate-model.actions';
 import { PlateState } from '../physics-core/plate-state';
 import { Action } from '@ngrx/store';
 
-export const plateReducer = (state: PlateState = Object.assign({}, PlateDistortionModel.initState), action: Action) => {
+const defaultPlateState: PlateState = Object.assign({}, PlateDistortionModel.initState)
+
+export const plateReducer = (state: PlateState = defaultPlateState, action: Action) => {
 
   switch (action.type) {
     case PlateActionTypes.UPDATE_DIMENSIONS:

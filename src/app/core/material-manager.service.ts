@@ -9,17 +9,24 @@ import { PZT5H } from '../materials/materials/pzt5h.material';
 import { PZT8 } from '../materials/materials/pzt8.material';
 import { Action, Store } from '@ngrx/store';
 import { AddMaterialsAction, UpdateMaterialAction } from '../actions/material.action';
+import { MaterialClass } from '../materials/material-class.enum';
 
 @Injectable()
+
+
+
 export class MaterialManagerService {
 
   materials: Material[];
   lastCustomIndex = 0;
 
+  defaultMaterials = new Map <MaterialClass, Material> ();
+
   constructor(private store: Store<object[]>) {
     this.initDefaultMaterials();
     this.initStoredMaterials();
-    console.log('manager')
+    this.defaultMaterials[MaterialClass.Crystal] = Quartz;
+    this.defaultMaterials[MaterialClass.Ceramic_TP] = BaTiO3;
     this.store.dispatch(new AddMaterialsAction(this.materials))
   }
 
@@ -60,6 +67,17 @@ export class MaterialManagerService {
     this.serialize();
     this.store.dispatch(new UpdateMaterialAction(material));
   }
+
+  getMaterial(id: number) {
+    for (const material of this.materials){
+      if (id === material.id) {
+        return material;
+      }
+    }
+    return null;
+  }
+
+
 
   serialize() {
     localStorage.setItem('storedMaterials', JSON.stringify(this.materials.map((material) => material.serialize())));

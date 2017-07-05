@@ -1,3 +1,3 @@
 export enum ModesEnum {
-  ForcedVibrations, FreeVibrations, PressureOpen, PressureShorted, VoltageShear
+  ForcedVibrations = 1, FreeVibrations, PressureOpen, PressureShorted, VoltageShear
 }

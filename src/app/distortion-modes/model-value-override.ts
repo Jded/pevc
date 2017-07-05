@@ -1,8 +1,9 @@
 export class ModelValueOverride {
-  externalForces: number;
-  linearExaggeration: number;
-  strain: number[][];
-  timeExpansion: number;
-  voltage: number;
-  frequency: number;
+  externalForces?: number;
+  linearExaggeration?: number;
+  strain?: number[][];
+  timeExpansion?: number;
+  voltage?: number;
+  frequency?: number;
+  harmonicNumber?: number;
 }

@@ -4,6 +4,7 @@ import { ForcedVibrations } from '../distortion-modes/modes/forced-vibrations';
 import { FreeVibrations } from '../distortion-modes/modes/free-vibrations';
 import { PressureOpen } from '../distortion-modes/modes/pressure-open';
 import { PressureShorted } from '../distortion-modes/modes/pressure-shorted';
+import { VoltageShear } from '../distortion-modes/modes/voltage-shear';
 // import { VoltageShear } from './modes/voltage-shear';
 
 @Injectable()
@@ -17,6 +18,8 @@ export class ModeFactoryService {
     {name: 'VoltageShear', id: ModesEnum.VoltageShear}
   ]
 
+  defaultMode = ModesEnum.FreeVibrations;
+
   constructor() { }
 
   getMode(id: ModesEnum) {
@@ -29,8 +32,8 @@ export class ModeFactoryService {
         return PressureOpen;
       case ModesEnum.PressureShorted:
         return PressureShorted;
-     /* case ModesEnum.VoltageShear:
-        return VoltageShear;*/
+      case ModesEnum.VoltageShear:
+        return VoltageShear;
     }
   }
 }

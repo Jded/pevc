@@ -7,13 +7,25 @@ import { Constants } from '../../physics-core/constants';
 import { ModeApiValue } from '../mode-api-value.enum';
 
 export class PressureShorted implements DistortionMode {
+  static supportedClasses = [MaterialClass.Ceramic_TP];
+  static api: ModeApi = {
+    externalForces: ModeApiValue.INPUT,
+    voltage: ModeApiValue.IGNORE,
+    frequency: ModeApiValue.IGNORE,
+    time: ModeApiValue.IGNORE,
+    strain: ModeApiValue.OUTPUT,
+    harmonicNumber: ModeApiValue.IGNORE,
+    stretch: ModeApiValue.INPUT,
+    linearExaggeration: ModeApiValue.INPUT,
+    timeExpansion: ModeApiValue.IGNORE
+  };
   modeId: string;
   modeName: string;
   override: ModelValueOverride;
-  api: ModeApi;
-  supportedClasses: MaterialClass[];
+  api = PressureShorted.api;
 
   distortModel(model: PlateDistortionModel, time: number) {
+    if (!model.material) { return; }
     if (model.material.type === MaterialClass.Ceramic_TP) {
       model.voltage = 0;
       model.strain[2][2] = -model.externalForces / (model.material.c[2][2] * Math.pow(10, Constants.C_EXP));
@@ -35,22 +47,11 @@ export class PressureShorted implements DistortionMode {
   constructor() {
     this.modeId = 'PRESSURE_SHORTED';
     this.modeName = 'Pressure on plate, shorted electrodes';
-    this.supportedClasses = [MaterialClass.Ceramic_TP];
     this.override = new ModelValueOverride();
     this.override.externalForces = 100;
     this.override.linearExaggeration = 9;
     this.override.strain = [[0, 0, 0],
       [0, 0, 0],
       [0, 0, 0]];
-
-    this.api = new ModeApi();
-    this.api.pressure = ModeApiValue.INPUT;
-    this.api.voltage = ModeApiValue.IGNORE;
-    this.api.frequency = ModeApiValue.IGNORE;
-    this.api.time = ModeApiValue.IGNORE;
-    this.api.strain = ModeApiValue.OUTPUT;
-    this.api.harmonicNumber = ModeApiValue.IGNORE;
-    this.api.stretch = ModeApiValue.INPUT;
-
   }
 }

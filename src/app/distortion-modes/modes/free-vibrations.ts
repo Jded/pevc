@@ -14,14 +14,26 @@ class Cache {
 }
 
 export class FreeVibrations implements DistortionMode {
+  static supportedClasses = [MaterialClass.Crystal, MaterialClass.Ceramic_TP];
+  static api: ModeApi = {
+    externalForces: ModeApiValue.IGNORE,
+    voltage: ModeApiValue.OUTPUT,
+    frequency: ModeApiValue.OUTPUT,
+    time: ModeApiValue.INPUT,
+    strain: ModeApiValue.OUTPUT,
+    harmonicNumber: ModeApiValue.INPUT,
+    stretch: ModeApiValue.IGNORE,
+    linearExaggeration: ModeApiValue.INPUT,
+    timeExpansion: ModeApiValue.INPUT
+  };
   modeId: string;
   modeName: string;
   override: ModelValueOverride;
-  api: ModeApi;
-  supportedClasses: MaterialClass[];
+  api = FreeVibrations.api;
   calculationCache: Cache;
 
   distortModel(model: PlateDistortionModel, time: number) {
+    if (!model.material) {return;}
     if (model.material.type === MaterialClass.Ceramic_TP) {
       this.distortCeramic(model, time)
     } else {
@@ -30,6 +42,7 @@ export class FreeVibrations implements DistortionMode {
   }
 
   distortCrystal(model: PlateDistortionModel, time: number) {
+    console.log('distort')
     const initVoltage = 10;
     const timeModifier = Math.pow(10, model.timeExpansion - 1);
     if (!this.calculationCache) {
@@ -61,6 +74,7 @@ export class FreeVibrations implements DistortionMode {
         * Math.cos(this.calculationCache.frequency * time / (1000 * timeModifier)));
       target.y = source.y;
     })
+    console.log(model.voltageOutput)
     model.voltageOutput = initVoltage * Math.cos(this.calculationCache.frequency * time / (1000 * timeModifier));
   }
 
@@ -87,7 +101,6 @@ export class FreeVibrations implements DistortionMode {
     }
 
     model.frequency = this.calculationCache.frequency;
-
     const constantAmplitude = 0.5 * model.dimensions[1] / model.dimensions[0];
     model.basicGeometry.vertices.forEach((source, index) => {
       const target = model.modifiedGeometry.vertices[index];
@@ -104,19 +117,8 @@ export class FreeVibrations implements DistortionMode {
   constructor() {
     this.modeId = 'FREE_VIBRATIONS';
     this.modeName = 'Free vibrations (dynamic)';
-    this.supportedClasses = [MaterialClass.Crystal, MaterialClass.Ceramic_TP];
     this.override = new ModelValueOverride();
     this.override.timeExpansion = 8;
     this.override.linearExaggeration = 1;
-
-    this.api = new ModeApi();
-    this.api.pressure = ModeApiValue.IGNORE;
-    this.api.voltage = ModeApiValue.OUTPUT;
-    this.api.frequency = ModeApiValue.OUTPUT;
-    this.api.time = ModeApiValue.INPUT;
-    this.api.strain = ModeApiValue.OUTPUT;
-    this.api.harmonicNumber = ModeApiValue.INPUT;
-    this.api.stretch = ModeApiValue.IGNORE;
-
   }
 }

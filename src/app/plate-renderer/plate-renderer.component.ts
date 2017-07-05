@@ -7,6 +7,7 @@ import { Store } from '@ngrx/store';
 import { PlateState } from '../physics-core/plate-state';
 import { Observable } from 'rxjs/Observable';
 import { PlateService } from '../core/plate.service';
+import { RenderParameters } from './render-parameters';
 
 @Component({
   selector: 'pevc-plate-renderer',
@@ -18,7 +19,13 @@ export class PlateRendererComponent implements OnInit {
   plateModel: PlateDistortionModel;
   renderer: PlateRenderer;
   plateState$: Observable<PlateState>;
-  constructor(private element: ElementRef, private store: Store<PlateState>, plateService: PlateService) {
+  renderTrigger$: Observable<RenderParameters>;
+  constructor(private element: ElementRef,
+              private store: Store<PlateState>,
+              plateService: PlateService,
+              private renderStore: Store<RenderParameters>
+              ) {
+    this.renderTrigger$ = renderStore.select('render');
     this.plateState$ = store.select('plate');
     this.plateModel = plateService.activePlate;
   }
@@ -31,6 +38,12 @@ export class PlateRendererComponent implements OnInit {
     this.plateState$.subscribe((state: PlateState) => {
       this.plateModel.consumeState(state);
       this.renderer.swapGeometry();
+      this.renderer.render();
+    })
+    this.renderTrigger$.subscribe((renderParams: RenderParameters) => {
+      if (renderParams.shouldSwapGeometry) {
+        this.renderer.swapGeometry();
+      }
       this.renderer.render();
     })
   }

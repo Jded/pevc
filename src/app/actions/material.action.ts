@@ -39,18 +39,18 @@ export class RemoveMaterialAction implements Action {
 
 export class SelectActiveMaterialAction implements Action {
   type: string = MaterialActionTypes.SELECT_ACTIVE_MATERIAL;
-  payload: Material;
+  payload: number;
 
-  constructor(payload: Material) {
+  constructor(payload: number) {
     this.payload = payload;
   }
 }
 
 export class SelectEditedMaterialAction implements Action {
   type: string = MaterialActionTypes.SELECT_EDITED_MATERIAL;
-  payload: Material;
+  payload: number;
 
-  constructor(payload: Material) {
+  constructor(payload: number) {
     this.payload = payload;
   }
 }

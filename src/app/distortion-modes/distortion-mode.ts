@@ -8,7 +8,6 @@ export interface DistortionMode {
   modeName: string;
   override: ModelValueOverride;
   api: ModeApi;
-  supportedClasses: MaterialClass[];
   distortModel (model: PlateDistortionModel, time: number): void;
 }
 

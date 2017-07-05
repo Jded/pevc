@@ -13,14 +13,27 @@ class Cache {
 }
 
 export class ForcedVibrations implements DistortionMode {
+  static supportedClasses = [MaterialClass.Crystal, MaterialClass.Ceramic_TP];
+  static api: ModeApi = {
+    externalForces: ModeApiValue.IGNORE,
+    voltage: ModeApiValue.INPUT,
+    frequency: ModeApiValue.INPUT,
+    time: ModeApiValue.INPUT,
+    strain: ModeApiValue.OUTPUT,
+    harmonicNumber: ModeApiValue.INPUT,
+    stretch: ModeApiValue.IGNORE,
+    linearExaggeration: ModeApiValue.INPUT,
+    timeExpansion: ModeApiValue.INPUT
+  };
+
   modeId: string;
   modeName: string;
   override: ModelValueOverride;
-  api: ModeApi;
-  supportedClasses: MaterialClass[];
   calculationCache: Cache;
+  api = ForcedVibrations.api;
 
   distortModel(model: PlateDistortionModel, time: number) {
+    if (!model.material) {return;}
     if (model.material.type === MaterialClass.Ceramic_TP) {
       this.distortCeramic(model, time)
     } else {
@@ -75,21 +88,10 @@ export class ForcedVibrations implements DistortionMode {
   constructor() {
     this.modeId = 'FORCED_VIBRATIONS';
     this.modeName = 'Forced vibrations';
-    this.supportedClasses = [MaterialClass.Crystal, MaterialClass.Ceramic_TP];
     this.override = new ModelValueOverride();
     this.override.timeExpansion = 4;
     this.override.linearExaggeration = 6;
     this.override.voltage = 10;
     this.override.frequency = 10000;
-
-    this.api = new ModeApi();
-    this.api.pressure = ModeApiValue.IGNORE;
-    this.api.voltage = ModeApiValue.INPUT;
-    this.api.frequency = ModeApiValue.INPUT;
-    this.api.time = ModeApiValue.INPUT;
-    this.api.strain = ModeApiValue.OUTPUT;
-    this.api.harmonicNumber = ModeApiValue.INPUT;
-    this.api.stretch = ModeApiValue.IGNORE;
-
   }
 }

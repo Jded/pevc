@@ -13,14 +13,27 @@ class Cache {
 }
 
 export class VoltageShear implements DistortionMode {
+  static supportedClasses = [MaterialClass.Crystal];
+  static api: ModeApi = {
+    externalForces: ModeApiValue.IGNORE,
+    voltage: ModeApiValue.INPUT,
+    frequency: ModeApiValue.IGNORE,
+    time: ModeApiValue.IGNORE,
+    strain: ModeApiValue.OUTPUT,
+    harmonicNumber: ModeApiValue.IGNORE,
+    stretch: ModeApiValue.INPUT,
+    linearExaggeration: ModeApiValue.INPUT,
+    timeExpansion: ModeApiValue.IGNORE
+  };
+
   modeId: string;
   modeName: string;
   override: ModelValueOverride;
-  api: ModeApi;
-  supportedClasses: MaterialClass[];
+  api = VoltageShear.api;
   calculationCache: Cache;
 
   distortModel(model: PlateDistortionModel, time: number) {
+    if (!model.material) {return; }
     if (model.material.type === MaterialClass.Crystal) {
       const thickness = model.dimensions[1] / 1000;
       model.strain[1][0] = -(model.material.e[1][5] * model.voltage) / (model.material.c[5][5] * Math.pow(10, Constants.C_EXP) * thickness);
@@ -37,21 +50,11 @@ export class VoltageShear implements DistortionMode {
   constructor() {
     this.modeId = 'VOLTAGE_SHEAR';
     this.modeName = 'Shear deformation from applied Voltage';
-    this.supportedClasses = [MaterialClass.Crystal];
     this.override = new ModelValueOverride();
     this.override.linearExaggeration = 6;
     this.override.voltage = 100;
     this.override.strain = [[0, 0, 0],
       [0, 0, 0],
       [0, 0, 0]];
-
-    this.api = new ModeApi();
-    this.api.pressure = ModeApiValue.IGNORE;
-    this.api.voltage = ModeApiValue.INPUT;
-    this.api.frequency = ModeApiValue.IGNORE;
-    this.api.time = ModeApiValue.IGNORE;
-    this.api.strain = ModeApiValue.OUTPUT;
-    this.api.harmonicNumber = ModeApiValue.IGNORE;
-    this.api.stretch = ModeApiValue.INPUT;
   }
 }
