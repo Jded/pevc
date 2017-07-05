@@ -15,7 +15,6 @@ export class AddMaterialsAction implements Action {
 
   constructor(payload: Material[]) {
     this.payload = payload;
-    console.log('running', this);
   }
 }
 

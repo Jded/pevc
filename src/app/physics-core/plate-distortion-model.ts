@@ -9,27 +9,21 @@ import { CalculationHelper } from './calculation.helper';
 import { ModelValueOverride } from '../distortion-modes/model-value-override';
 import { isUndefined } from 'util';
 import { PlateState } from './plate-state';
+import { Quartz } from '../materials/materials/quartz.material';
 
 export class PlateDistortionModel extends PlateState {
 
   public static initState: PlateState = {
-    timeExpansion: 10,
-    linearExaggeration:  1,
-    harmonic:  2,
-    frequency:  0,
-    strain:  [[0, 0, 0],
-      [0, 0, 0],
-      [0, 0, 0]
-    ],
-    stress:  [[0, 0, 0],
-      [0, 0, 0],
-      [0, 0, 0]
-    ],
     resolution:  [10, 50, 10],
     dimensions:  [10, 1, 10],
     boundaryConditions:  [],
   }
 
+  timeExpansion: number
+  harmonicNumber:  number
+  frequency:  number
+  strain:  number[][]
+  stress:  number[][]
   initTime: number;
   time: number;
   mode: DistortionMode;
@@ -44,12 +38,25 @@ export class PlateDistortionModel extends PlateState {
 
   constructor(initTime) {
     super();
+    console.log('initState')
     Object.assign(this, PlateDistortionModel.initState);
+    this.timeExpansion = 10;
+    this.linearExaggeration = 1;
+    this.harmonicNumber = 2;
+    this.frequency = 0;
+    this.strain = [[0, 0, 0],
+      [0, 0, 0],
+      [0, 0, 0]
+    ];
+    this.stress = [[0, 0, 0],
+      [0, 0, 0],
+      [0, 0, 0]
+    ];
     this.initTime = initTime;
     this.time = initTime;
     this.boundaryConditions = [];
     this.mode = new PressureOpen();
-    this.material = null; // pzMaterial.getMaterial('PZT5H');
+    this.material = Quartz;
     this.voltage = 0;
     this.externalForces = 1;
     this.setOverrides();
@@ -57,11 +64,9 @@ export class PlateDistortionModel extends PlateState {
   }
 
   fillGeometries() {
-    // var existing = !!this.basicGeometry;
     this.basicGeometry = new PiezoPlateGeometry(this.dimensions, this.resolution);
     this.box = new BoxGeometry(this.dimensions[0], this.dimensions[1], this.dimensions[2])
     this.modifiedGeometry = new PiezoPlateGeometry(this.dimensions, this.resolution);
-    // if(existing){$rootScope.$broadcast("pzExchangeGeometry");}
   }
 
   resetTime(time) {
@@ -103,20 +108,23 @@ export class PlateDistortionModel extends PlateState {
 
   consumeState(state: PlateState) {
     Object.assign(this, state);
+    this.mode.clearCache();
     this.fillGeometries();
   }
 
   setParameters (data: ModelValueOverride) {
     if (!this.mode) { return; }
+    this.mode.clearCache();
     for (const prop in this.mode.api) {
       if (this.mode.api[prop] === ModeApiValue.INPUT) {
+        console.log('prop',prop,data[prop])
         this[prop] = data[prop];
       }
     }
-
   }
 
   setOverrides() {
+    console.log('override')
     for (const propKey in this.mode.override) {
       if (this.mode.override[propKey]) {
         this[propKey] = this.mode.override[propKey];

@@ -5,8 +5,6 @@ import { Action } from '@ngrx/store';
 import { RenderActionTypes } from '../actions/render.actions';
 import { RenderParameters } from '../plate-renderer/render-parameters';
 
-const defaultPlateState: PlateState = Object.assign({}, PlateDistortionModel.initState)
-
 const defaultState: RenderParameters = {
   shouldRender: false,
   shouldSwapGeometry: false,
@@ -27,13 +25,11 @@ export const renderReducer = (state: RenderParameters = defaultState, action: Ac
       override = {
         updateTime: true
       }
-      console.log('override1')
       return Object.assign({}, state, override) as RenderParameters;
     case RenderActionTypes.STOP_TIMER:
       override = {
         updateTime: false
       }
-      console.log('override2')
       return Object.assign({}, state, override) as RenderParameters;
     case RenderActionTypes.TICK:
       override = {

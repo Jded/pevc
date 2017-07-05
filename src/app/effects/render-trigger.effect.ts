@@ -47,12 +47,11 @@ export class RenderTriggerEffects {
             .takeUntil(this.actions$.ofType(RenderActionTypes.STOP_TIMER))
             .switchMap(() => {
               const time = Date.now();
-              console.log('trig')
               this.plateService.setTime(time);
               return Observable.of(new TickAction(time))
             });
         }
-        )
+      )
   }
 
   constructor(private actions$: Actions,

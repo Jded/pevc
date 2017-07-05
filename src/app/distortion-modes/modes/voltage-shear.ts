@@ -6,12 +6,6 @@ import { PlateDistortionModel } from '../../physics-core/plate-distortion-model'
 import { Constants } from '../../physics-core/constants';
 import { ModeApiValue } from '../mode-api-value.enum';
 
-class Cache {
-  frequency: number;
-  ksi: number;
-  class: MaterialClass;
-}
-
 export class VoltageShear implements DistortionMode {
   static supportedClasses = [MaterialClass.Crystal];
   static api: ModeApi = {
@@ -30,7 +24,8 @@ export class VoltageShear implements DistortionMode {
   modeName: string;
   override: ModelValueOverride;
   api = VoltageShear.api;
-  calculationCache: Cache;
+
+  clearCache() {}
 
   distortModel(model: PlateDistortionModel, time: number) {
     if (!model.material) {return; }

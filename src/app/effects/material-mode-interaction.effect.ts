@@ -53,7 +53,6 @@ export class MaterialModeInteractionEffects {
     return this.actions$
       .ofType(ModeActionTypes.MODEL_INPUTS_CHANGE)
       .switchMap(action  => {
-        console.log('?', action.payload)
         this.plateService.setModelInputs(action.payload as ModelValueOverride);
         return Observable.of(new ReRenderAction());
       })

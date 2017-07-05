@@ -6,11 +6,6 @@ import { PlateDistortionModel } from '../../physics-core/plate-distortion-model'
 import { Constants } from '../../physics-core/constants';
 import { ModeApiValue } from '../mode-api-value.enum';
 
-class Cache {
-  frequency: number;
-  ksi: number;
-  class: MaterialClass;
-}
 
 export class ForcedVibrations implements DistortionMode {
   static supportedClasses = [MaterialClass.Crystal, MaterialClass.Ceramic_TP];
@@ -29,8 +24,9 @@ export class ForcedVibrations implements DistortionMode {
   modeId: string;
   modeName: string;
   override: ModelValueOverride;
-  calculationCache: Cache;
   api = ForcedVibrations.api;
+
+  clearCache() {}
 
   distortModel(model: PlateDistortionModel, time: number) {
     if (!model.material) {return;}

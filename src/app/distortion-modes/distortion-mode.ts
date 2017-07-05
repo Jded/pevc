@@ -9,5 +9,6 @@ export interface DistortionMode {
   override: ModelValueOverride;
   api: ModeApi;
   distortModel (model: PlateDistortionModel, time: number): void;
+  clearCache(): void;
 }
 

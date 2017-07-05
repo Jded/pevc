@@ -35,6 +35,7 @@ export class ModelSettingsComponent implements AfterViewInit {
   currentMaterial$: Observable<number>;
   currentMode$: Observable<ModesEnum>;
   currentModeApi$: Observable<ModeApi>;
+  currentModeInputs$: Observable<ModelValueOverride>;
   timer$: Observable<boolean>;
 
   controlsConfig: object = {
@@ -69,6 +70,7 @@ export class ModelSettingsComponent implements AfterViewInit {
     this.timer$ = this.renderStore.select('render').map((p: RenderParameters) => p.updateTime);
     this.modelSettings = this.fb.group(this.controlsConfig);
     this.modelInputs = this.fb.group(this.modelInputsConfig);
+    this.currentModeInputs$ = this.modelInputsStore.select('modelInput');
 
     this.modelSettings.valueChanges
       .withLatestFrom(this.currentMode$, this.currentMaterial$)
@@ -86,7 +88,7 @@ export class ModelSettingsComponent implements AfterViewInit {
       .withLatestFrom()
       .subscribe(([mode, formData ]) => this.modeChange(mode, formData))
 
-    this.modelInputsStore.select('modelInput').subscribe((state: ModelValueOverride) => {
+    this.currentModeInputs$.subscribe((state: ModelValueOverride) => {
       this.modelInputs.patchValue({
         frequency: state.frequency,
         harmonicNumber: state.harmonicNumber ? state.harmonicNumber : 1,
@@ -105,7 +107,6 @@ export class ModelSettingsComponent implements AfterViewInit {
         override[prop] = formData[prop];
       }
     }
-    console.log('dispatch', formData, modeApi, override)
     this.modelInputsStore.dispatch(new ModelInputsChangeAction(override))
   }
 

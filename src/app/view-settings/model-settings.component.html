@@ -19,7 +19,7 @@
       </label>
     </form>
     <form [formGroup] = "modelInputs" novalidate>
-      {{model$ | async | json}}
+      {{currentModeInputs$ | async | json}}
       <label *ngIf = "(currentModeApi$ | async).frequency === ModeApiValue.INPUT">Frequency:
         <input type="number" class="form-control" formControlName="frequency" required/>
       </label>

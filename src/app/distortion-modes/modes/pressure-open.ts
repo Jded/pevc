@@ -25,6 +25,8 @@ export class PressureOpen implements DistortionMode {
   override: ModelValueOverride;
   api = PressureOpen.api;
 
+  clearCache() {}
+
   distortModel(model: PlateDistortionModel, time: number) {
     if (!model.material) { return; }
     if (model.material.type === MaterialClass.Ceramic_TP) {
