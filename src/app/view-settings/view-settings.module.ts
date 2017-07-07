@@ -5,6 +5,9 @@ import { ModelSettingsComponent } from './model-settings.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CoreModule } from '../core/core.module';
 import { SharedModule } from '../shared/shared.module';
+import { ModeSelectorComponent } from './mode-selector/mode-selector.component';
+import { MaterialSelectorComponent } from './material-selector/material-selector.component';
+import { ModelInputsComponent } from './model-inputs/model-inputs.component';
 
 @NgModule({
   imports: [
@@ -12,7 +15,13 @@ import { SharedModule } from '../shared/shared.module';
     SharedModule,
     ReactiveFormsModule
   ],
-  declarations: [PlateSettingsComponent, ModelSettingsComponent],
+  declarations: [
+    PlateSettingsComponent,
+    ModelSettingsComponent,
+    ModeSelectorComponent,
+    MaterialSelectorComponent,
+    ModelInputsComponent],
   exports: [PlateSettingsComponent, ModelSettingsComponent]
 })
-export class ViewSettingsModule { }
+export class ViewSettingsModule {
+}

@@ -1,7 +1,7 @@
 import { DistortionMode } from '../distortion-mode';
 import { MaterialClass } from '../../materials/material-class.enum';
 import { ModeApi } from '../mode-api';
-import { ModelValueOverride } from '../model-value-override';
+import { ModelValueDTO } from '../model-value-dto';
 import { PlateDistortionModel } from '../../physics-core/plate-distortion-model';
 import { Constants } from '../../physics-core/constants';
 import { ModeApiValue } from '../mode-api-value.enum';
@@ -15,14 +15,15 @@ export class PressureOpen implements DistortionMode {
     time: ModeApiValue.IGNORE,
     strain: ModeApiValue.OUTPUT,
     harmonicNumber: ModeApiValue.IGNORE,
-    stretch: ModeApiValue.INPUT,
     linearExaggeration: ModeApiValue.INPUT,
-    timeExpansion: ModeApiValue.IGNORE
+    timeExpansion: ModeApiValue.IGNORE,
+    voltageOutput: ModeApiValue.OUTPUT,
+    stretch: ModeApiValue.CALCULATED_OUTPUT
   };
 
   modeId: string;
   modeName: string;
-  override: ModelValueOverride;
+  override: ModelValueDTO;
   api = PressureOpen.api;
 
   clearCache() {}
@@ -56,7 +57,7 @@ export class PressureOpen implements DistortionMode {
   constructor() {
     this.modeId = 'PRESSURE_OPEN';
     this.modeName = 'Pressure on plate, open electrodes';
-    this.override = new ModelValueOverride();
+    this.override = new ModelValueDTO();
     this.override.externalForces = 100;
     this.override.linearExaggeration = 9;
     this.override.strain = [[0, 0, 0],

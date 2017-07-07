@@ -18,7 +18,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { MaterialModeInteractionEffects } from './effects/material-mode-interaction.effect';
 import { renderReducer } from './reducers/render.reducer';
 import { RenderTriggerEffects } from './effects/render-trigger.effect';
-import { modeApiReducer } from './reducers/mode-api.reducer';
+import { modelApiReducer } from './reducers/model-api.reducer';
 import { modelInputsReducer } from './reducers/model-inputs.reducer';
 
 
@@ -47,7 +47,7 @@ const appRoutes = [{ path: 'home', component: HomeComponent },
       materialActive: materialActiveReducer,
       materialEdited: materialEditedReducer,
       mode: modeReducer,
-      modeApi: modeApiReducer,
+      modeApi: modelApiReducer,
       modelInput: modelInputsReducer
     }),
     EffectsModule.run(MaterialModeInteractionEffects),

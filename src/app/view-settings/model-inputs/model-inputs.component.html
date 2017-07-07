@@ -1,0 +1,25 @@
+<form [formGroup] = "modelInputs" novalidate>
+  <label *ngIf = "(currentModeApi$ | async).frequency === ModeApiValue.INPUT">Frequency:
+    <input type="number" class="form-control" formControlName="frequency" required/>
+  </label>
+
+  <label *ngIf = "(currentModeApi$ | async).harmonicNumber === ModeApiValue.INPUT">Harmonic number:
+    <input type="number" class="form-control" formControlName="harmonicNumber" required/>
+  </label>
+
+  <label *ngIf = "(currentModeApi$ | async).externalForces === ModeApiValue.INPUT">Pressure:
+    <input type="number" class="form-control" formControlName="externalForces" required/>
+  </label>
+
+  <label *ngIf = "(currentModeApi$ | async).voltage === ModeApiValue.INPUT">Voltage:
+    <input type="number" class="form-control" formControlName="voltage" required/>
+  </label>
+
+  <label *ngIf = "(currentModeApi$ | async).time === ModeApiValue.INPUT"> Logarythmic time expansion:
+    <input type="number" class="form-control" formControlName="timeExpansion" required/>
+  </label>
+
+  <label *ngIf = "(currentModeApi$ | async).linearExaggeration === ModeApiValue.INPUT">Logarythmic deformation exaggeration :
+    <input type="number" class="form-control" formControlName="linearExaggeration" required/>
+  </label>
+</form>

@@ -1,3 +1,3 @@
 export enum ModeApiValue {
-  'INPUT', 'OUTPUT', 'IGNORE'
+  'INPUT', 'OUTPUT', 'IGNORE', 'CALCULATED_OUTPUT'
 }

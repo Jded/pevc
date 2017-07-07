@@ -4,7 +4,7 @@ import { MaterialActionTypes } from '../actions/material.action';
 import { Quartz } from '../materials/materials/quartz.material';
 import { MaterialClass } from '../materials/material-class.enum';
 import { BaTiO3 } from '../materials/materials/batio3.material';
-import { ModeActionTypes } from '../actions/mode.actions';
+import { ModelActionTypes } from '../actions/model.actions';
 import { DistortionMode } from '../distortion-modes/distortion-mode';
 import { Material } from '../materials/material';
 

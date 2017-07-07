@@ -1,20 +1,20 @@
 import { Action } from '@ngrx/store';
-import { ModeActionTypes } from '../actions/mode.actions';
-import { ModelValueOverride } from '../distortion-modes/model-value-override';
+import { ModelActionTypes } from '../actions/model.actions';
+import { ModelValueDTO } from '../distortion-modes/model-value-dto';
 
-const override = new ModelValueOverride();
+const override = new ModelValueDTO();
 override.externalForces = 100;
 override.linearExaggeration = 9;
 override.strain = [[0, 0, 0],
   [0, 0, 0],
   [0, 0, 0]];
 
-export const modelInputsReducer = (state: ModelValueOverride = override, action: Action) => {
+export const modelInputsReducer = (state: ModelValueDTO = override, action: Action) => {
   switch (action.type) {
-    case ModeActionTypes.MODEL_INPUTS_SET:
-      return Object.assign(new ModelValueOverride(), state, action.payload );
-    case ModeActionTypes.MODEL_INPUTS_SET:
-      return Object.assign(new ModelValueOverride(), state, action.payload );
+    case ModelActionTypes.MODEL_INPUTS_SET:
+      return Object.assign(new ModelValueDTO(), state, action.payload );
+    case ModelActionTypes.MODEL_INPUTS_CHANGE:
+      return Object.assign(new ModelValueDTO(), state, action.payload );
     default:
       return state;
   }

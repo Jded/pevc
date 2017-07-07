@@ -4,7 +4,7 @@ import { HomeComponent } from './home.component';
 import { UiComponentsModule } from '../ui-components/ui-components.module';
 import { ViewSettingsModule } from '../view-settings/view-settings.module';
 import { PlateRendererModule } from '../plate-renderer/plate-renderer.module';
-import { DataPlotterModule } from '../data-plotter/data-plotter.module';
+import { DataOutputModule } from '../data-output/data-output.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 @NgModule({
@@ -13,7 +13,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     UiComponentsModule,
     ViewSettingsModule,
     PlateRendererModule,
-    DataPlotterModule
+    DataOutputModule
   ],
   declarations: [HomeComponent]
 })

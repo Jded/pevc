@@ -6,10 +6,11 @@ import { PressureOpen } from '../distortion-modes/modes/pressure-open';
 import { ModeApiValue } from '../distortion-modes/mode-api-value.enum';
 import { Constants } from './constants';
 import { CalculationHelper } from './calculation.helper';
-import { ModelValueOverride } from '../distortion-modes/model-value-override';
+import { ModelValueDTO } from '../distortion-modes/model-value-dto';
 import { isUndefined } from 'util';
 import { PlateState } from './plate-state';
 import { Quartz } from '../materials/materials/quartz.material';
+import { hasOwnProperty } from 'tslint/lib/utils';
 
 export class PlateDistortionModel extends PlateState {
 
@@ -38,7 +39,6 @@ export class PlateDistortionModel extends PlateState {
 
   constructor(initTime) {
     super();
-    console.log('initState')
     Object.assign(this, PlateDistortionModel.initState);
     this.timeExpansion = 10;
     this.linearExaggeration = 1;
@@ -53,7 +53,7 @@ export class PlateDistortionModel extends PlateState {
       [0, 0, 0]
     ];
     this.initTime = initTime;
-    this.time = initTime;
+    this.time = 0;
     this.boundaryConditions = [];
     this.mode = new PressureOpen();
     this.material = Quartz;
@@ -75,6 +75,7 @@ export class PlateDistortionModel extends PlateState {
 
   distortModel() {
     this.mode.distortModel(this, this.time);
+    console.log(this.modifiedGeometry)
     this.modifiedGeometry.verticesNeedUpdate = true;
   }
 
@@ -93,17 +94,28 @@ export class PlateDistortionModel extends PlateState {
 
   getValue(id: string) {
     switch (id) {
-      case 'VOLTAGE':
-        return this.voltageOutput;
-      case 'PRESSURE':
-        return this.externalForces;
-      case 'STRAIN':
-        return this.strain;
-      case 'ELONGZ':
-        return CalculationHelper.getElongation (this.basicGeometry, this.modifiedGeometry, 'z');
-      case 'ELONGY':
-        return CalculationHelper.getElongation (this.basicGeometry, this.modifiedGeometry, 'y');
+      case 'stretch':
+        return [CalculationHelper.getElongation (this.basicGeometry, this.modifiedGeometry, 'x'),
+          CalculationHelper.getElongation (this.basicGeometry, this.modifiedGeometry, 'y'),
+          CalculationHelper.getElongation (this.basicGeometry, this.modifiedGeometry, 'z')];
+      default:
+        return null;
     }
+  }
+
+  getOutputValues(): ModelValueDTO {
+    const output = new ModelValueDTO();
+    for (const prop in this.mode.api) {
+      if (hasOwnProperty(this.mode.api, prop)) {
+        if (this.mode.api[prop] === ModeApiValue.OUTPUT) {
+          output[prop] = this[prop];
+        }
+        if (this.mode.api[prop] === ModeApiValue.CALCULATED_OUTPUT) {
+          output[prop] = this.getValue(prop);
+        }
+      }
+    }
+    return output;
   }
 
   consumeState(state: PlateState) {
@@ -112,12 +124,11 @@ export class PlateDistortionModel extends PlateState {
     this.fillGeometries();
   }
 
-  setParameters (data: ModelValueOverride) {
+  setInputValues (data: ModelValueDTO) {
     if (!this.mode) { return; }
     this.mode.clearCache();
     for (const prop in this.mode.api) {
       if (this.mode.api[prop] === ModeApiValue.INPUT) {
-        console.log('prop',prop,data[prop])
         this[prop] = data[prop];
       }
     }

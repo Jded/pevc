@@ -1,51 +1,9 @@
 <div fxLayout="row" fxLayout.lt-lg="column">
   <div fxFlex = "1 1 100%">
-    <form [formGroup] = "modelSettings" novalidate>
-      <label>Material:
-        <select class="form-control" formControlName="material" required>
-          <option *ngFor="let material of materialOptions$ | async" [value]="material['id']">{{material['name']}}</option>
-        </select>
-        <div *ngIf = "formErrors['material']">
-          <p *ngFor = "let error of formErrors['material']">{{error | errorTranslator:10000}}</p>
-        </div>
-      </label>
-      <label>Simulation mode:
-        <select type="number" class="form-control" formControlName="mode" required>
-          <option *ngFor="let mode of modeOptions" [value]="mode['id']">{{mode['name']}}</option>
-        </select>
-        <div *ngIf = "formErrors['mode']">
-          <p *ngFor = "let error of formErrors['mode']">{{error | errorTranslator:10000}}</p>
-        </div>
-      </label>
-    </form>
-    <form [formGroup] = "modelInputs" novalidate>
-      {{currentModeInputs$ | async | json}}
-      <label *ngIf = "(currentModeApi$ | async).frequency === ModeApiValue.INPUT">Frequency:
-        <input type="number" class="form-control" formControlName="frequency" required/>
-      </label>
+    <pevc-mode-selector></pevc-mode-selector>
+    <pevc-material-selector></pevc-material-selector>
+    <pevc-model-inputs></pevc-model-inputs>
 
-      <label *ngIf = "(currentModeApi$ | async).harmonicNumber === ModeApiValue.INPUT">Harmonic number:
-        <input type="number" class="form-control" formControlName="harmonicNumber" required/>
-      </label>
-
-      <label *ngIf = "(currentModeApi$ | async).externalForces === ModeApiValue.INPUT">Pressure:
-        <input type="number" class="form-control" formControlName="externalForces" required/>
-      </label>
-
-      <label *ngIf = "(currentModeApi$ | async).voltage === ModeApiValue.INPUT">Voltage:
-        <input type="number" class="form-control" formControlName="voltage" required/>
-      </label>
-
-      <label *ngIf = "(currentModeApi$ | async).time === ModeApiValue.INPUT"> Logarythmic time expansion:
-        <input type="number" class="form-control" formControlName="timeExpansion" required/>
-      </label>
-
-
-      <label *ngIf = "(currentModeApi$ | async).linearExaggeration === ModeApiValue.INPUT">Logarythmic deformation exaggeration :
-        <input type="number" class="form-control" formControlName="linearExaggeration" required/>
-      </label>
-
-      <button #toggleTime><span *ngIf="timer$ | async">Toggle off</span> <span *ngIf="!(timer$ | async)">Toggle on</span></button>
-    </form>
+    <button #toggleTime><span *ngIf="timer$ | async">Toggle off</span> <span *ngIf="!(timer$ | async)">Toggle on</span></button>
   </div>
 </div>

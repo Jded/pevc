@@ -1,7 +1,7 @@
 import { DistortionMode } from '../distortion-mode';
 import { MaterialClass } from '../../materials/material-class.enum';
 import { ModeApi } from '../mode-api';
-import { ModelValueOverride } from '../model-value-override';
+import { ModelValueDTO } from '../model-value-dto';
 import { PlateDistortionModel } from '../../physics-core/plate-distortion-model';
 import { Constants } from '../../physics-core/constants';
 import { ModeApiValue } from '../mode-api-value.enum';
@@ -15,21 +15,22 @@ export class ForcedVibrations implements DistortionMode {
     frequency: ModeApiValue.INPUT,
     time: ModeApiValue.INPUT,
     strain: ModeApiValue.OUTPUT,
-    harmonicNumber: ModeApiValue.INPUT,
-    stretch: ModeApiValue.IGNORE,
+    harmonicNumber: ModeApiValue.IGNORE,
     linearExaggeration: ModeApiValue.INPUT,
-    timeExpansion: ModeApiValue.INPUT
+    timeExpansion: ModeApiValue.INPUT,
+    voltageOutput: ModeApiValue.IGNORE,
+    stretch: ModeApiValue.CALCULATED_OUTPUT
   };
 
   modeId: string;
   modeName: string;
-  override: ModelValueOverride;
+  override: ModelValueDTO;
   api = ForcedVibrations.api;
 
   clearCache() {}
 
   distortModel(model: PlateDistortionModel, time: number) {
-    if (!model.material) {return;}
+    if (!model.material) {return; }
     if (model.material.type === MaterialClass.Ceramic_TP) {
       this.distortCeramic(model, time)
     } else {
@@ -50,6 +51,7 @@ export class ForcedVibrations implements DistortionMode {
     const divider = c66 * (1 + ksqr) * ksi * h * Math.cos(ksi * h / 2) - e26eps22 * Math.sin(ksi * h / 2);
     const Acoeff = (-V * model.material.e[1][5]) / divider;
     const exaggeration = Math.pow(10, model.linearExaggeration);
+    console.log('mode', model)
     model.basicGeometry.vertices.forEach((source, index) => {
       const target = model.modifiedGeometry.vertices[index];
       target.z = source.z;
@@ -84,7 +86,7 @@ export class ForcedVibrations implements DistortionMode {
   constructor() {
     this.modeId = 'FORCED_VIBRATIONS';
     this.modeName = 'Forced vibrations';
-    this.override = new ModelValueOverride();
+    this.override = new ModelValueDTO();
     this.override.timeExpansion = 4;
     this.override.linearExaggeration = 6;
     this.override.voltage = 10;

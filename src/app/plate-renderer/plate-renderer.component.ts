@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
 
 import { PerspectiveCamera, BoxGeometry } from '@types/three'
 import { PlateDistortionModel } from '../physics-core/plate-distortion-model';
@@ -20,6 +20,7 @@ export class PlateRendererComponent implements OnInit {
   renderer: PlateRenderer;
   plateState$: Observable<PlateState>;
   renderTrigger$: Observable<RenderParameters>;
+
   constructor(private element: ElementRef,
               private store: Store<PlateState>,
               plateService: PlateService,
@@ -41,6 +42,7 @@ export class PlateRendererComponent implements OnInit {
       this.renderer.render();
     })
     this.renderTrigger$.subscribe((renderParams: RenderParameters) => {
+      console.log('rp', renderParams)
       if (renderParams.shouldSwapGeometry) {
         this.renderer.swapGeometry();
       }
@@ -48,4 +50,7 @@ export class PlateRendererComponent implements OnInit {
     })
   }
 
+  @HostListener('window:resize', ['$event']) onResize(resize) {
+    this.renderer.displayResize(this.element.nativeElement.parentNode.offsetWidth - 48)
+  }
 }

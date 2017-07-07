@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DataPlotterComponent } from './data-plotter.component';
+import { ModeSelectorComponent } from './mode-selector.component';
 
-describe('DataPlotterComponent', () => {
-  let component: DataPlotterComponent;
-  let fixture: ComponentFixture<DataPlotterComponent>;
+describe('ModeSelectorComponent', () => {
+  let component: ModeSelectorComponent;
+  let fixture: ComponentFixture<ModeSelectorComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DataPlotterComponent ]
+      declarations: [ ModeSelectorComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DataPlotterComponent);
+    fixture = TestBed.createComponent(ModeSelectorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

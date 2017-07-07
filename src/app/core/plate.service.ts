@@ -4,7 +4,7 @@ import { ModesEnum } from '../distortion-modes/modes.enum';
 import { ModeFactoryService } from './mode-factory.service';
 import { MaterialManagerService } from './material-manager.service';
 import { PlateRenderer } from '../plate-renderer/plate-renderer';
-import { ModelValueOverride } from '../distortion-modes/model-value-override';
+import { ModelValueDTO } from '../distortion-modes/model-value-dto';
 
 @Injectable()
 export class PlateService {
@@ -18,6 +18,7 @@ export class PlateService {
 
   setMode(modeId: ModesEnum) {
     this.activePlate.mode = new (this.modeFactory.getMode(modeId))();
+    this.activePlate.setOverrides();
     this.activePlate.distortModel();
     return this.activePlate.mode;
   }
@@ -27,13 +28,17 @@ export class PlateService {
     this.activePlate.distortModel();
   }
 
-  setModelInputs(inputValues: ModelValueOverride) {
-    this.activePlate.setParameters(inputValues)
+  setModelInputs(inputValues: ModelValueDTO) {
+    this.activePlate.setInputValues(inputValues);
+    this.activePlate.distortModel();
   }
 
   setTime(time: number) {
     this.activePlate.updateTime(time);
     this.activePlate.distortModel();
+  }
+  getOutputValues(): ModelValueDTO {
+    return this.activePlate.getOutputValues()
   }
 
 }

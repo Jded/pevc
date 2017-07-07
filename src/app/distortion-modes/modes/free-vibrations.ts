@@ -1,7 +1,7 @@
 import { DistortionMode } from '../distortion-mode';
 import { MaterialClass } from '../../materials/material-class.enum';
 import { ModeApi } from '../mode-api';
-import { ModelValueOverride } from '../model-value-override';
+import { ModelValueDTO } from '../model-value-dto';
 import { PlateDistortionModel } from '../../physics-core/plate-distortion-model';
 import { Constants } from '../../physics-core/constants';
 import { ModeApiValue } from '../mode-api-value.enum';
@@ -22,13 +22,14 @@ export class FreeVibrations implements DistortionMode {
     time: ModeApiValue.INPUT,
     strain: ModeApiValue.OUTPUT,
     harmonicNumber: ModeApiValue.INPUT,
-    stretch: ModeApiValue.IGNORE,
     linearExaggeration: ModeApiValue.INPUT,
-    timeExpansion: ModeApiValue.INPUT
+    timeExpansion: ModeApiValue.INPUT,
+    voltageOutput: ModeApiValue.OUTPUT,
+    stretch: ModeApiValue.CALCULATED_OUTPUT
   };
   modeId: string;
   modeName: string;
-  override: ModelValueOverride;
+  override: ModelValueDTO;
   api = FreeVibrations.api;
   calculationCache: Cache;
 
@@ -46,9 +47,9 @@ export class FreeVibrations implements DistortionMode {
   }
 
   distortCrystal(model: PlateDistortionModel, time: number) {
+    console.log('mode',model)
     const initVoltage = 10;
     const timeModifier = Math.pow(10, model.timeExpansion - 1);
-    console.log('timemmod', model.timeExpansion)
     if (!this.calculationCache) {
       this.calculationCache = new Cache();
       const cepsilon = model.material.c[5][5] * model.material.epsilon[1][1] * Math.pow(10, Constants.C_EXP + Constants.EPSILON_EXP);
@@ -66,6 +67,7 @@ export class FreeVibrations implements DistortionMode {
         this.calculationCache.ksi = model.harmonicNumber * Math.PI / h;
       }
     }
+    console.log('calcache', this.calculationCache)
     model.frequency = this.calculationCache.frequency;
     const constantAmplitude = 0.1 * model.dimensions[1] / model.dimensions[0];
 
@@ -119,7 +121,8 @@ export class FreeVibrations implements DistortionMode {
   constructor() {
     this.modeId = 'FREE_VIBRATIONS';
     this.modeName = 'Free vibrations (dynamic)';
-    this.override = new ModelValueOverride();
+    this.override = new ModelValueDTO();
+    this.override.harmonicNumber = 1;
     this.override.timeExpansion = 8;
     this.override.linearExaggeration = 1;
   }
