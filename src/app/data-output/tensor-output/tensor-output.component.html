@@ -1,3 +1,10 @@
-<p>
-  tensor-output works!
-</p>
+<label>{{tensorData['name']}}</label>
+<div *ngFor="let column of tensorData['value']">
+  <span *ngIf="!!column['length']">
+    <span *ngFor="let row of column"> {{row}}
+    </span>
+  </span>
+  <span *ngIf="!column['length']">
+    {{column}}
+  </span>
+</div>

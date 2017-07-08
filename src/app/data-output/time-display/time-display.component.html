@@ -1,3 +1,2 @@
-<p>
-  time-display works!
-</p>
+<p>Real time: {{(renderStatus$ | async).time | formatTime}}</p>
+<p>Model time: {{(renderStatus$ | async).scaledTime | formatTime}}</p>

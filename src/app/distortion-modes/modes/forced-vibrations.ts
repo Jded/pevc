@@ -2,9 +2,10 @@ import { DistortionMode } from '../distortion-mode';
 import { MaterialClass } from '../../materials/material-class.enum';
 import { ModeApi } from '../mode-api';
 import { ModelValueDTO } from '../model-value-dto';
-import { PlateDistortionModel } from '../../physics-core/plate-distortion-model';
 import { Constants } from '../../physics-core/constants';
 import { ModeApiValue } from '../mode-api-value.enum';
+import { PlateService } from '../../core/plate.service';
+import { CalculationHelper } from '../../physics-core/calculation.helper';
 
 
 export class ForcedVibrations implements DistortionMode {
@@ -14,12 +15,12 @@ export class ForcedVibrations implements DistortionMode {
     voltage: ModeApiValue.INPUT,
     frequency: ModeApiValue.INPUT,
     time: ModeApiValue.INPUT,
-    strain: ModeApiValue.OUTPUT,
+    strain: ModeApiValue.OUTPUT_TENSOR_STATIC,
     harmonicNumber: ModeApiValue.IGNORE,
     linearExaggeration: ModeApiValue.INPUT,
     timeExpansion: ModeApiValue.INPUT,
     voltageOutput: ModeApiValue.IGNORE,
-    stretch: ModeApiValue.CALCULATED_OUTPUT
+    stretch: ModeApiValue.OUTPUT_TENSOR_DYNAMIC
   };
 
   modeId: string;
@@ -29,16 +30,21 @@ export class ForcedVibrations implements DistortionMode {
 
   clearCache() {}
 
-  distortModel(model: PlateDistortionModel, time: number) {
+  distortModel(model: PlateService, time: number) {
     if (!model.material) {return; }
     if (model.material.type === MaterialClass.Ceramic_TP) {
       this.distortCeramic(model, time)
     } else {
       this.distortCrystal(model, time)
     }
+    model.stretch = [
+      CalculationHelper.getElongation (model.basicGeometry, model.modifiedGeometry, 'x'),
+      CalculationHelper.getElongation (model.basicGeometry, model.modifiedGeometry, 'y'),
+      CalculationHelper.getElongation (model.basicGeometry, model.modifiedGeometry, 'z')
+    ];
   }
 
-  distortCrystal(model: PlateDistortionModel, time: number) {
+  distortCrystal(model: PlateService, time: number) {
     const V = model.voltage;
     const f = model.frequency;
     const h = model.dimensions[1] / 1000;
@@ -51,7 +57,6 @@ export class ForcedVibrations implements DistortionMode {
     const divider = c66 * (1 + ksqr) * ksi * h * Math.cos(ksi * h / 2) - e26eps22 * Math.sin(ksi * h / 2);
     const Acoeff = (-V * model.material.e[1][5]) / divider;
     const exaggeration = Math.pow(10, model.linearExaggeration);
-    console.log('mode', model)
     model.basicGeometry.vertices.forEach((source, index) => {
       const target = model.modifiedGeometry.vertices[index];
       target.z = source.z;
@@ -61,7 +66,7 @@ export class ForcedVibrations implements DistortionMode {
   }
 
 
-  distortCeramic(model: PlateDistortionModel, time: number) {
+  distortCeramic(model: PlateService, time: number) {
     const V = model.voltage;
     const f = model.frequency;
     const h = model.dimensions[1] / 1000;

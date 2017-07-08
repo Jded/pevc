@@ -6,14 +6,13 @@ import {
 import { OrbitControls} from 'three-orbitcontrols-ts'
 
 import { Dir } from '@angular/material';
-import { PlateDistortionModel } from '../physics-core/plate-distortion-model';
 
-import * as THREE from 'three'; // hack for supplying OrbitControls with proper class camera
+import * as THREE from 'three';
+import { PlateService } from '../core/plate.service'; // hack for supplying OrbitControls with proper class camera
 
 let rendererReference, sceneReference, cameraReference;
 
 export class PlateRenderer {
-  plate: PlateDistortionModel;
   scene: Scene;
   glRenderer: WebGLRenderer;
   projector: Projector;
@@ -25,8 +24,7 @@ export class PlateRenderer {
   cube2: Mesh;
   line: Line;
 
-  constructor(initSize: number, plateModel: PlateDistortionModel) {
-    this.plate = plateModel;
+  constructor(initSize: number, private plateService: PlateService) {
     this.scene = new Scene();
     cameraReference = this.camera = new PerspectiveCamera(60, Math.max(initSize, 800) / 800, 1, 1000);
     this.camera.position.z = 25;
@@ -45,8 +43,8 @@ export class PlateRenderer {
   setupScene() {
     const material = new MeshPhongMaterial( { color: 0x00cc00, transparent: true, opacity: 0.3});
     const material2 = new MeshBasicMaterial( { color: 0x000000, wireframe: true} );
-    this.cube = new Mesh( this.plate.box, material );
-    this.cube2 = new Mesh( this.plate.modifiedGeometry, material2 );
+    this.cube = new Mesh( this.plateService.box, material );
+    this.cube2 = new Mesh( this.plateService.modifiedGeometry, material2 );
     const geometry1 = <Geometry> this.cube.geometry;
     geometry1.verticesNeedUpdate = true;
     const geometry2 = <Geometry> this.cube2.geometry
@@ -98,8 +96,8 @@ export class PlateRenderer {
   }
 
   swapGeometry() {
-    this.cube.geometry = this.plate.box;
-    this.cube2.geometry = this.plate.modifiedGeometry;
+    this.cube.geometry = this.plateService.box;
+    this.cube2.geometry = this.plateService.modifiedGeometry;
     this.cube.geometry.verticesNeedUpdate = true;
     this.cube2.geometry.verticesNeedUpdate = true;
   }

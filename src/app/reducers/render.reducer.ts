@@ -1,6 +1,3 @@
-import { PlateDistortionModel } from '../physics-core/plate-distortion-model';
-import { PlateActionTypes } from '../actions/plate-model.actions';
-import { PlateState } from '../physics-core/plate-state';
 import { Action } from '@ngrx/store';
 import { RenderActionTypes } from '../actions/render.actions';
 import { RenderParameters } from '../plate-renderer/render-parameters';
@@ -35,7 +32,8 @@ export const renderReducer = (state: RenderParameters = defaultState, action: Ac
       override = {
         shouldRender: true,
         shouldSwapGeometry: false,
-        time: action.payload
+        time: action.payload.time,
+        scaledTime: action.payload.scaledTime
       }
       return Object.assign({}, state, override) as RenderParameters;
     default:

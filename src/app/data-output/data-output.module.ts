@@ -5,10 +5,12 @@ import { DataOutputComponent } from './data-output.component';
 import { PlotterComponent } from './plotter/plotter.component';
 import { TensorOutputComponent } from './tensor-output/tensor-output.component';
 import { NumberOutputComponent } from './number-output/number-output.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    SharedModule
   ],
   declarations: [
     DataOutputComponent,

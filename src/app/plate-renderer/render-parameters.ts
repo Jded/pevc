@@ -2,5 +2,6 @@ export class RenderParameters {
   shouldSwapGeometry: boolean;
   shouldRender: boolean;
   updateTime: boolean;
-  time: number;
+  time?: number;
+  scaledTime?: number;
 }

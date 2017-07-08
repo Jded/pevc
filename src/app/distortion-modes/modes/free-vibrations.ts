@@ -2,10 +2,10 @@ import { DistortionMode } from '../distortion-mode';
 import { MaterialClass } from '../../materials/material-class.enum';
 import { ModeApi } from '../mode-api';
 import { ModelValueDTO } from '../model-value-dto';
-import { PlateDistortionModel } from '../../physics-core/plate-distortion-model';
 import { Constants } from '../../physics-core/constants';
 import { ModeApiValue } from '../mode-api-value.enum';
 import { CalculationHelper } from '../../physics-core/calculation.helper';
+import { PlateService } from '../../core/plate.service';
 
 class Cache {
   frequency: number;
@@ -17,15 +17,15 @@ export class FreeVibrations implements DistortionMode {
   static supportedClasses = [MaterialClass.Crystal, MaterialClass.Ceramic_TP];
   static api: ModeApi = {
     externalForces: ModeApiValue.IGNORE,
-    voltage: ModeApiValue.OUTPUT,
-    frequency: ModeApiValue.OUTPUT,
+    voltage: ModeApiValue.IGNORE,
+    frequency: ModeApiValue.OUTPUT_SCALAR_STATIC,
     time: ModeApiValue.INPUT,
-    strain: ModeApiValue.OUTPUT,
+    strain: ModeApiValue.OUTPUT_TENSOR_STATIC,
     harmonicNumber: ModeApiValue.INPUT,
     linearExaggeration: ModeApiValue.INPUT,
     timeExpansion: ModeApiValue.INPUT,
-    voltageOutput: ModeApiValue.OUTPUT,
-    stretch: ModeApiValue.CALCULATED_OUTPUT
+    voltageOutput: ModeApiValue.OUTPUT_SCALAR_DYNAMIC,
+    stretch: ModeApiValue.OUTPUT_TENSOR_DYNAMIC
   };
   modeId: string;
   modeName: string;
@@ -37,17 +37,21 @@ export class FreeVibrations implements DistortionMode {
     this.calculationCache = null;
   }
 
-  distortModel(model: PlateDistortionModel, time: number) {
-    if (!model.material) {return;}
+  distortModel(model: PlateService, time: number) {
+    if (!model.material) {return; }
     if (model.material.type === MaterialClass.Ceramic_TP) {
       this.distortCeramic(model, time)
     } else {
       this.distortCrystal(model, time)
     }
+    model.stretch = [
+      CalculationHelper.getElongation (model.basicGeometry, model.modifiedGeometry, 'x'),
+      CalculationHelper.getElongation (model.basicGeometry, model.modifiedGeometry, 'y'),
+      CalculationHelper.getElongation (model.basicGeometry, model.modifiedGeometry, 'z')
+    ];
   }
 
-  distortCrystal(model: PlateDistortionModel, time: number) {
-    console.log('mode',model)
+  distortCrystal(model: PlateService, time: number) {
     const initVoltage = 10;
     const timeModifier = Math.pow(10, model.timeExpansion - 1);
     if (!this.calculationCache) {
@@ -67,7 +71,6 @@ export class FreeVibrations implements DistortionMode {
         this.calculationCache.ksi = model.harmonicNumber * Math.PI / h;
       }
     }
-    console.log('calcache', this.calculationCache)
     model.frequency = this.calculationCache.frequency;
     const constantAmplitude = 0.1 * model.dimensions[1] / model.dimensions[0];
 
@@ -82,7 +85,7 @@ export class FreeVibrations implements DistortionMode {
     model.voltageOutput = initVoltage * Math.cos(this.calculationCache.frequency * time / (1000 * timeModifier));
   }
 
-  distortCeramic(model: PlateDistortionModel, time: number) {
+  distortCeramic(model: PlateService, time: number) {
     const initVoltage = 10;
     const h = model.dimensions[1] / 1000;
     const timeModifier = Math.pow(10, model.timeExpansion - 1);

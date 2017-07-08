@@ -2,23 +2,24 @@ import { DistortionMode } from '../distortion-mode';
 import { MaterialClass } from '../../materials/material-class.enum';
 import { ModeApi } from '../mode-api';
 import { ModelValueDTO } from '../model-value-dto';
-import { PlateDistortionModel } from '../../physics-core/plate-distortion-model';
 import { Constants } from '../../physics-core/constants';
 import { ModeApiValue } from '../mode-api-value.enum';
+import { PlateService } from '../../core/plate.service';
+import { CalculationHelper } from '../../physics-core/calculation.helper';
 
 export class PressureOpen implements DistortionMode {
   static supportedClasses = [MaterialClass.Ceramic_TP];
   static api: ModeApi = {
     externalForces: ModeApiValue.INPUT,
-    voltage: ModeApiValue.OUTPUT,
+    voltage: ModeApiValue.IGNORE,
     frequency: ModeApiValue.IGNORE,
     time: ModeApiValue.IGNORE,
-    strain: ModeApiValue.OUTPUT,
+    strain: ModeApiValue.OUTPUT_TENSOR_STATIC,
     harmonicNumber: ModeApiValue.IGNORE,
     linearExaggeration: ModeApiValue.INPUT,
     timeExpansion: ModeApiValue.IGNORE,
-    voltageOutput: ModeApiValue.OUTPUT,
-    stretch: ModeApiValue.CALCULATED_OUTPUT
+    voltageOutput: ModeApiValue.OUTPUT_SCALAR_STATIC,
+    stretch: ModeApiValue.OUTPUT_TENSOR_STATIC
   };
 
   modeId: string;
@@ -28,7 +29,7 @@ export class PressureOpen implements DistortionMode {
 
   clearCache() {}
 
-  distortModel(model: PlateDistortionModel, time: number) {
+  distortModel(model: PlateService, time: number) {
     if (!model.material) { return; }
     if (model.material.type === MaterialClass.Ceramic_TP) {
 
@@ -51,6 +52,12 @@ export class PressureOpen implements DistortionMode {
         target.x = source.x;
         target.y = source.y * correction;
       })
+
+      model.stretch = [
+        CalculationHelper.getElongation (model.basicGeometry, model.modifiedGeometry, 'x'),
+        CalculationHelper.getElongation (model.basicGeometry, model.modifiedGeometry, 'y'),
+        CalculationHelper.getElongation (model.basicGeometry, model.modifiedGeometry, 'z')
+      ];
     }
   }
 

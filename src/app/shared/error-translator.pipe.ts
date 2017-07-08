@@ -15,7 +15,6 @@ const translationTable: Map<string, (argument: string) => string> = new Map();
 export class ErrorTranslatorPipe implements PipeTransform {
 
   transform(value: any, args?: any): any {
-    console.log(args)
     if (translationTable[value]) {return translationTable[value](args); }
     return value;
   }

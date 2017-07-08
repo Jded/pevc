@@ -25,7 +25,6 @@ export class MaterialModeInteractionEffects {
     .map(action => action as SelectModeAction)
     .withLatestFrom(this.materialStore$.select('materialActive'))
     .map(([action , materialId]: [SelectModeAction, number]) => {
-      console.log('sit', action, materialId)
       const supported: MaterialClass[] = action.payload ?
         this.modeFactoryService.getMode(action.payload as ModesEnum).supportedClasses :
         [];
@@ -57,7 +56,6 @@ export class MaterialModeInteractionEffects {
         return supported.indexOf(materialType) > -1 ? null : this.modeFactoryService.defaultMode;
       })
       .switchMap(targetMode => {
-        console.log('this', [targetMode])
         if (targetMode !== null) {
           Observable.of(new SelectModeAction(targetMode))
         } else {
@@ -72,6 +70,7 @@ export class MaterialModeInteractionEffects {
       .ofType(ModelActionTypes.MODEL_INPUTS_CHANGE)
       .switchMap(action  => {
         this.plateService.setModelInputs(action.payload as ModelValueDTO);
+        this.modelInputOutputStore$.dispatch(new ModelOutputsChangeAction(this.plateService.getOutputValues()));
         return Observable.of(new ReRenderAction());
       })
 

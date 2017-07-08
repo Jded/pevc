@@ -1,6 +1,3 @@
-import { PlateDistortionModel } from '../physics-core/plate-distortion-model';
-import { PlateActionTypes } from '../actions/plate-model.actions';
-import { PlateState } from '../physics-core/plate-state';
 import { Action } from '@ngrx/store';
 import { MaterialActionTypes } from '../actions/material.action';
 

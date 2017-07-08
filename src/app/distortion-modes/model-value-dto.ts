@@ -1,4 +1,4 @@
-export class ModelValueDTO {
+export class ModelValueDTO extends Object {
   externalForces?: number;
   linearExaggeration?: number;
   strain?: number[][];

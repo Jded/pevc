@@ -17,16 +17,16 @@ export class RenderTriggerEffects {
     return this.actions$
       .ofType(RenderActionTypes.START_TIMER)
       .switchMap(action => {
-          return Observable
-            .timer(20, 20)
-            .takeUntil(this.actions$.ofType(RenderActionTypes.STOP_TIMER))
-            .switchMap(() => {
-              console.log('starting')
-              const time = Date.now();
-              this.plateService.setTime(time);
-              this.outputValueStore$.dispatch(new ModelOutputsChangeAction(this.plateService.getOutputValues()));
-              return Observable.of(new TickAction(time))
-            });
+        this.plateService.resetTime(Date.now());
+        return Observable
+          .timer(20, 20)
+          .takeUntil(this.actions$.ofType(RenderActionTypes.STOP_TIMER))
+          .switchMap(() => {
+            const time = this.plateService.setTime(Date.now());
+            const scaledTime = this.plateService.getScaledTime();
+            this.outputValueStore$.dispatch(new ModelOutputsChangeAction(this.plateService.getOutputValues()));
+            return Observable.of(new TickAction(time, scaledTime))
+          });
         }
       )
   }

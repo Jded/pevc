@@ -25,9 +25,12 @@ export class TimerStartAction implements Action {
 
 export class TickAction implements Action {
   type: string = RenderActionTypes.TICK;
-  payload: number;
+  payload: {
+    time: number;
+    scaledTime: number;
+  };
 
-  constructor (timestamp: number) {
-    this.payload = timestamp;
+  constructor (time: number, scaledTime: number) {
+    this.payload = {time, scaledTime};
   }
 }

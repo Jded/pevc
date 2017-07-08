@@ -20,6 +20,7 @@ import { renderReducer } from './reducers/render.reducer';
 import { RenderTriggerEffects } from './effects/render-trigger.effect';
 import { modelApiReducer } from './reducers/model-api.reducer';
 import { modelInputsReducer } from './reducers/model-inputs.reducer';
+import { modelOutputReducer } from './reducers/model-outputs.reducer';
 
 
 const appRoutes = [{ path: 'home', component: HomeComponent },
@@ -48,7 +49,8 @@ const appRoutes = [{ path: 'home', component: HomeComponent },
       materialEdited: materialEditedReducer,
       mode: modeReducer,
       modeApi: modelApiReducer,
-      modelInput: modelInputsReducer
+      modelInput: modelInputsReducer,
+      modelOutput: modelOutputReducer
     }),
     EffectsModule.run(MaterialModeInteractionEffects),
     EffectsModule.run(RenderTriggerEffects)

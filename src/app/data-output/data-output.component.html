@@ -1,26 +1,10 @@
 <div *ngIf="(currentModeApi$ | async).time === ModeApiValue.INPUT">
   <pevc-time-display></pevc-time-display>
-  <pevc-plotter></pevc-plotter>
+  <pevc-plotter [scalarStream$] = "scalarDynamicOutput$" [tensorStream$] = "tensorDynamicOutput$"></pevc-plotter>
 </div>
-<div *ngIf="(currentModeApi$ | async).time !== ModeApiValue.INPUT">
-  <div *ngFor = "let dataPiece of (modelOutputTensor$ | async)">
-    <pevc-tensor-output *ngIf="dataPiece.length" [tensorData]="dataPiece"></pevc-tensor-output>
-  </div>
-  <div *ngFor = "let dataPiece of (modelOutputTensor$ | async)">
-    <pevc-tensor-output *ngIf="dataPiece.length" [tensorData]="dataPiece"></pevc-tensor-output>
-  </div>
+<div *ngFor = "let dataPiece of (tensorStaticOutput$ | async)">
+  <pevc-tensor-output [tensorData]="dataPiece"></pevc-tensor-output>
 </div>
-
-<div ng-show = "currentMode == 'numeric'" layout="column" layout-wrap>
-  <div flex = "33" ng-repeat="valueHolder in currentData.holder" layout-gt-md="row" layout-lt-lg="column">
-    <div flex="20">{{valueHolder.plot.name}}:</div>
-    <div ng-if="!valueHolder.plot.tensor" flex>{{valueHolder.value}}</div>
-    <div ng-if="valueHolder.plot.tensor" flex>
-      <!--<md-grid-list md-cols="3" md-row-height="2:1" ng-repeat="row in valueHolder.value">
-        <md-grid-tile md-colspan="1" ng-repeat="value in row track by $index">
-          <span>{{value}}</span>
-        </md-grid-tile>
-      </md-grid-list>-->
-    </div>
-  </div>
+<div *ngFor = "let dataPiece of (scalarStaticOutput$ | async)">
+  <pevc-number-output [numericData]="dataPiece"></pevc-number-output>
 </div>

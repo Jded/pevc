@@ -39,7 +39,6 @@ export class ModeSelectorComponent implements OnInit {
   }
 
   externalModeChange(mode, formData) {
-    console.log('m',mode)
     if (!formData || mode !== formData['mode']) {
       this.modelSettings.patchValue({mode: mode}, { emitEvent: false });
     }

@@ -2,6 +2,7 @@ import { Action } from '@ngrx/store';
 import { ModesEnum } from '../distortion-modes/modes.enum';
 import { ModeApi } from '../distortion-modes/mode-api';
 import { ModelValueDTO } from '../distortion-modes/model-value-dto';
+import { ModeApiValue } from '../distortion-modes/mode-api-value.enum';
 
 export const ModelActionTypes = {
   SELECT_MODE: 'SELECT_MODE',
@@ -49,9 +50,9 @@ export class ModelInputsChangeAction implements Action {
 
 export class ModelOutputsChangeAction implements Action {
   type: string = ModelActionTypes.MODEL_OUTPUTS_CHANGE;
-  payload: ModelValueDTO;
+  payload: Map<ModeApiValue, ModelValueDTO>;
 
-  constructor(payload: ModelValueDTO) {
+  constructor(payload: Map<ModeApiValue, ModelValueDTO>) {
     this.payload = payload;
   }
 }

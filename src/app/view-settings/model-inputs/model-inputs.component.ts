@@ -59,7 +59,6 @@ export class ModelInputsComponent implements OnInit {
       if (hasOwnProperty(modeApi, prop)) {
         if (modeApi[prop] === ModeApiValue.INPUT) {
           if (formData[prop] && formData[prop] !== oldValues[prop]) {
-            console.log(formData[prop], oldValues[prop])
             changed = true;
           }
           override[prop] = formData[prop];

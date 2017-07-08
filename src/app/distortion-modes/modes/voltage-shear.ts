@@ -2,9 +2,10 @@ import { DistortionMode } from '../distortion-mode';
 import { MaterialClass } from '../../materials/material-class.enum';
 import { ModeApi } from '../mode-api';
 import { ModelValueDTO } from '../model-value-dto';
-import { PlateDistortionModel } from '../../physics-core/plate-distortion-model';
 import { Constants } from '../../physics-core/constants';
 import { ModeApiValue } from '../mode-api-value.enum';
+import { PlateService } from '../../core/plate.service';
+import { CalculationHelper } from '../../physics-core/calculation.helper';
 
 export class VoltageShear implements DistortionMode {
   static supportedClasses = [MaterialClass.Crystal];
@@ -13,12 +14,12 @@ export class VoltageShear implements DistortionMode {
     voltage: ModeApiValue.INPUT,
     frequency: ModeApiValue.IGNORE,
     time: ModeApiValue.IGNORE,
-    strain: ModeApiValue.OUTPUT,
+    strain: ModeApiValue.OUTPUT_TENSOR_STATIC,
     harmonicNumber: ModeApiValue.IGNORE,
     linearExaggeration: ModeApiValue.INPUT,
     timeExpansion: ModeApiValue.IGNORE,
-    voltageOutput: ModeApiValue.OUTPUT,
-    stretch: ModeApiValue.CALCULATED_OUTPUT
+    voltageOutput: ModeApiValue.OUTPUT_SCALAR_STATIC,
+    stretch: ModeApiValue.OUTPUT_TENSOR_STATIC
   };
 
   modeId: string;
@@ -28,7 +29,7 @@ export class VoltageShear implements DistortionMode {
 
   clearCache() {}
 
-  distortModel(model: PlateDistortionModel, time: number) {
+  distortModel(model: PlateService, time: number) {
     if (!model.material) {return; }
     if (model.material.type === MaterialClass.Crystal) {
       const thickness = model.dimensions[1] / 1000;
@@ -41,6 +42,11 @@ export class VoltageShear implements DistortionMode {
         target.y = source.y;
       })
     }
+    model.stretch = [
+      CalculationHelper.getElongation (model.basicGeometry, model.modifiedGeometry, 'x'),
+      CalculationHelper.getElongation (model.basicGeometry, model.modifiedGeometry, 'y'),
+      CalculationHelper.getElongation (model.basicGeometry, model.modifiedGeometry, 'z')
+    ];
   }
 
   constructor() {
