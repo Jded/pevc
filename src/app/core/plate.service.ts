@@ -25,21 +25,21 @@ export class PlateService extends PlateState {
     boundaryConditions:  [],
   }
 
-  timeExpansion: number
-  harmonicNumber:  number
-  frequency:  number
-  strain:  number[][]
-  stress:  number[][]
+  public modelValues: ModelValueDTO;
+  // timeExpansion: number
+  // harmonicNumber:  number
+  // frequency:  number
+  // strain:  number[][]
+  // stress:  number[][]
   initTime: number;
-  time: number;
+  // time: number;
   mode: DistortionMode;
   material: Material;
-  voltage: number;
-  voltageOutput: number;
-  externalForces: number;
-  linearExaggeration: number;
-  boundaryConditions: number [];
-  stretch: number[];
+  // voltageInput: number;
+  // voltageOutput: number;
+  // externalForces: number;
+  // linearExaggeration: number;
+  // stretch: number[];
   box: BoxGeometry;
   basicGeometry: PiezoPlateGeometry;
   modifiedGeometry: PiezoPlateGeometry;
@@ -48,25 +48,27 @@ export class PlateService extends PlateState {
               private materialManager: MaterialManagerService) {
     super();
     Object.assign(this, PlateService.initState);
-    this.timeExpansion = 10;
-    this.linearExaggeration = 1;
-    this.harmonicNumber = 2;
-    this.frequency = 0;
-    this.strain = [[0, 0, 0],
+    this.modelValues = new ModelValueDTO();
+    this.modelValues.timeExpansion = 10;
+    this.modelValues.harmonicNumber = 2;
+    this.modelValues.frequency = 0;
+
+    this.modelValues.linearExaggeration = 1;
+
+    this.modelValues.strain = [[0, 0, 0],
       [0, 0, 0],
       [0, 0, 0]
     ];
-    this.stress = [[0, 0, 0],
+    this.modelValues.stress = [[0, 0, 0],
       [0, 0, 0],
       [0, 0, 0]
     ];
     this.initTime = Date.now();
-    this.time = 0;
-    this.boundaryConditions = [];
+    this.modelValues.time = 0;
     this.mode = new PressureOpen();
     this.material = Quartz;
-    this.voltage = 0;
-    this.externalForces = 1;
+    this.modelValues.voltageInput = 0;
+    this.modelValues.externalForces = 1;
     this.setOverrides();
     this.fillGeometries();
   }
@@ -82,27 +84,27 @@ export class PlateService extends PlateState {
   }
 
   distortModel() {
-    this.mode.distortModel(this, this.time);
+    this.mode.distortModel(this, this.modelValues.time);
     this.modifiedGeometry.verticesNeedUpdate = true;
   }
 
   updateTime(timestamp) {
     if (this.mode.api.time === ModeApiValue.INPUT) {
-      this.time = timestamp - this.initTime;
+      this.modelValues.time = timestamp - this.initTime;
       return true;
     }
     return false;
   }
 
   getScaledTime = function () {
-    return (this.time / Math.pow(10, this.timeExpansion - 1));
+    return (this.time / Math.pow(10, this.modelValues.timeExpansion - 1));
   }
 
   appendToOutputSet(prop: string, apiValue: ModeApiValue, output: Map<ModeApiValue, ModelValueDTO>) {
     if (!output.has(apiValue)) {
       output.set(apiValue, new ModelValueDTO());
     }
-    output.get(apiValue)[prop] = this[prop];
+    output.get(apiValue)[prop] = this.modelValues[prop];
   }
 
   getOutputValues(): Map<ModeApiValue, ModelValueDTO> {
@@ -141,7 +143,7 @@ export class PlateService extends PlateState {
     this.mode.clearCache();
     for (const prop in this.mode.api) {
       if (this.mode.api[prop] === ModeApiValue.INPUT) {
-        this[prop] = data[prop];
+        this.modelValues[prop] = data[prop];
       }
     }
   }
@@ -149,7 +151,7 @@ export class PlateService extends PlateState {
   setOverrides() {
     for (const propKey in this.mode.override) {
       if (this.mode.override[propKey]) {
-        this[propKey] = this.mode.override[propKey];
+        this.modelValues[propKey] = this.mode.override[propKey];
       }
     }
   }
@@ -174,6 +176,6 @@ export class PlateService extends PlateState {
   setTime(time: number) {
     this.updateTime(time);
     this.distortModel();
-    return this.time;
+    return this.modelValues.time;
   }
 }

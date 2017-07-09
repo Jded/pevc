@@ -15,9 +15,7 @@ class Cache {
 
 export class FreeVibrations implements DistortionMode {
   static supportedClasses = [MaterialClass.Crystal, MaterialClass.Ceramic_TP];
-  static api: ModeApi = {
-    externalForces: ModeApiValue.IGNORE,
-    voltage: ModeApiValue.IGNORE,
+  static api: ModeApi = Object.assign( new ModeApi(), {
     frequency: ModeApiValue.OUTPUT_SCALAR_STATIC,
     time: ModeApiValue.INPUT,
     strain: ModeApiValue.OUTPUT_TENSOR_STATIC,
@@ -26,7 +24,7 @@ export class FreeVibrations implements DistortionMode {
     timeExpansion: ModeApiValue.INPUT,
     voltageOutput: ModeApiValue.OUTPUT_SCALAR_DYNAMIC,
     stretch: ModeApiValue.OUTPUT_TENSOR_DYNAMIC
-  };
+  });
   modeId: string;
   modeName: string;
   override: ModelValueDTO;
@@ -44,7 +42,7 @@ export class FreeVibrations implements DistortionMode {
     } else {
       this.distortCrystal(model, time)
     }
-    model.stretch = [
+    model.modelValues.stretch = [
       CalculationHelper.getElongation (model.basicGeometry, model.modifiedGeometry, 'x'),
       CalculationHelper.getElongation (model.basicGeometry, model.modifiedGeometry, 'y'),
       CalculationHelper.getElongation (model.basicGeometry, model.modifiedGeometry, 'z')
@@ -53,25 +51,25 @@ export class FreeVibrations implements DistortionMode {
 
   distortCrystal(model: PlateService, time: number) {
     const initVoltage = 10;
-    const timeModifier = Math.pow(10, model.timeExpansion - 1);
+    const timeModifier = Math.pow(10, model.modelValues.timeExpansion - 1);
     if (!this.calculationCache) {
       this.calculationCache = new Cache();
       const cepsilon = model.material.c[5][5] * model.material.epsilon[1][1] * Math.pow(10, Constants.C_EXP + Constants.EPSILON_EXP);
       const ksqr = (model.material.e[1][5] * model.material.e[1][5]) / cepsilon;
       const h = model.dimensions[1] / 1000;
       const c66 = model.material.c[5][5] * Math.pow(10, Constants.C_EXP);
-      if (model.harmonicNumber % 2) {
+      if (model.modelValues.harmonicNumber % 2) {
         const ksqr_t = ksqr / (1 + ksqr);
-        const ksi = CalculationHelper.getKsi(ksqr_t, h, model.harmonicNumber);
+        const ksi = CalculationHelper.getKsi(ksqr_t, h, model.modelValues.harmonicNumber);
         this.calculationCache.ksi = ksi;
         this.calculationCache.frequency = ksi * Math.sqrt((c66 * (1 + ksqr)) / model.material.density);
       } else {
         const coeff = Math.sqrt((c66 * (1 + ksqr)) / model.material.density);
-        this.calculationCache.frequency = (coeff * model.harmonicNumber * Math.PI) / h;
-        this.calculationCache.ksi = model.harmonicNumber * Math.PI / h;
+        this.calculationCache.frequency = (coeff * model.modelValues.harmonicNumber * Math.PI) / h;
+        this.calculationCache.ksi = model.modelValues.harmonicNumber * Math.PI / h;
       }
     }
-    model.frequency = this.calculationCache.frequency;
+    model.modelValues.frequency = this.calculationCache.frequency;
     const constantAmplitude = 0.1 * model.dimensions[1] / model.dimensions[0];
 
     model.basicGeometry.vertices.forEach((source, index) => {
@@ -82,42 +80,42 @@ export class FreeVibrations implements DistortionMode {
         * Math.cos(this.calculationCache.frequency * time / (1000 * timeModifier)));
       target.y = source.y;
     })
-    model.voltageOutput = initVoltage * Math.cos(this.calculationCache.frequency * time / (1000 * timeModifier));
+    model.modelValues.voltageOutput = initVoltage * Math.cos(this.calculationCache.frequency * time / (1000 * timeModifier));
   }
 
-  distortCeramic(model: PlateService, time: number) {
+  distortCeramic(plateModel: PlateService, time: number) {
     const initVoltage = 10;
-    const h = model.dimensions[1] / 1000;
-    const timeModifier = Math.pow(10, model.timeExpansion - 1);
+    const h = plateModel.dimensions[1] / 1000;
+    const timeModifier = Math.pow(10, plateModel.modelValues.timeExpansion - 1);
 
     if (this.calculationCache === undefined) {
       this.calculationCache = new Cache();
-      const cepsilon = model.material.c[2][2] * model.material.epsilon[2][2] * Math.pow(10, Constants.C_EXP + Constants.EPSILON_EXP);
-      const ksqr = (model.material.e[2][2] * model.material.e[2][2]) / cepsilon;
-      const c33 = model.material.c[2][2] * Math.pow(10, Constants.C_EXP);
-      if (!(model.harmonicNumber % 2)) {
+      const cepsilon = plateModel.material.c[2][2] * plateModel.material.epsilon[2][2] * Math.pow(10, Constants.C_EXP + Constants.EPSILON_EXP);
+      const ksqr = (plateModel.material.e[2][2] * plateModel.material.e[2][2]) / cepsilon;
+      const c33 = plateModel.material.c[2][2] * Math.pow(10, Constants.C_EXP);
+      if (!(plateModel.modelValues.harmonicNumber % 2)) {
         const ksqr_t = ksqr / (1 + ksqr);
-        const ksi = CalculationHelper.getKsi(ksqr_t, h, model.harmonicNumber);
+        const ksi = CalculationHelper.getKsi(ksqr_t, h, plateModel.modelValues.harmonicNumber);
         this.calculationCache.ksi = ksi;
-        this.calculationCache.frequency = ksi * Math.sqrt(c33 * (1 + ksqr) / model.material.density);
+        this.calculationCache.frequency = ksi * Math.sqrt(c33 * (1 + ksqr) / plateModel.material.density);
       } else {
-        const coeff = Math.sqrt((c33 * (1 + ksqr)) / model.material.density);
-        this.calculationCache.frequency = (coeff * model.harmonicNumber * Math.PI) / h;
-        this.calculationCache.ksi = model.harmonicNumber * Math.PI / h;
+        const coeff = Math.sqrt((c33 * (1 + ksqr)) / plateModel.material.density);
+        this.calculationCache.frequency = (coeff * plateModel.modelValues.harmonicNumber * Math.PI) / h;
+        this.calculationCache.ksi = plateModel.modelValues.harmonicNumber * Math.PI / h;
       }
     }
 
-    model.frequency = this.calculationCache.frequency;
-    const constantAmplitude = 0.5 * model.dimensions[1] / model.dimensions[0];
-    model.basicGeometry.vertices.forEach((source, index) => {
-      const target = model.modifiedGeometry.vertices[index];
+    plateModel.modelValues.frequency = this.calculationCache.frequency;
+    const constantAmplitude = 0.5 * plateModel.dimensions[1] / plateModel.dimensions[0];
+    plateModel.basicGeometry.vertices.forEach((source, index) => {
+      const target = plateModel.modifiedGeometry.vertices[index];
       target.z = source.z;
       target.x = source.x;
       target.y = source.y * (1 +
         0.1 * Math.cos(source.y / 1000 * this.calculationCache.ksi) *
         Math.cos(this.calculationCache.frequency * time / (1000 * timeModifier)));
     });
-    model.voltageOutput = initVoltage * Math.cos(this.calculationCache.frequency * time / (1000 * timeModifier));
+    plateModel.modelValues.voltageOutput = initVoltage * Math.cos(this.calculationCache.frequency * time / (1000 * timeModifier));
 
   }
 

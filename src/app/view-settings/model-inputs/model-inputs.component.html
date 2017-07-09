@@ -11,7 +11,7 @@
     <input type="number" class="form-control" formControlName="externalForces" required/>
   </label>
 
-  <label *ngIf = "(currentModeApi$ | async).voltage === ModeApiValue.INPUT">Voltage:
+  <label *ngIf = "(currentModeApi$ | async).voltageInput === ModeApiValue.INPUT">Voltage:
     <input type="number" class="form-control" formControlName="voltage" required/>
   </label>
 
@@ -19,7 +19,7 @@
     <input type="number" class="form-control" formControlName="timeExpansion" required/>
   </label>
 
-  <label *ngIf = "(currentModeApi$ | async).linearExaggeration === ModeApiValue.INPUT">Logarythmic deformation exaggeration :
+  <label *ngIf = "(currentModeApi$ | async).linearExaggeration === ModeApiValue.INPUT">Logarythmic deformation exaggeration:
     <input type="number" class="form-control" formControlName="linearExaggeration" required/>
   </label>
 </form>

@@ -9,18 +9,13 @@ import { CalculationHelper } from '../../physics-core/calculation.helper';
 
 export class VoltageShear implements DistortionMode {
   static supportedClasses = [MaterialClass.Crystal];
-  static api: ModeApi = {
-    externalForces: ModeApiValue.IGNORE,
+  static api: ModeApi = Object.assign( new ModeApi(), {
     voltage: ModeApiValue.INPUT,
-    frequency: ModeApiValue.IGNORE,
-    time: ModeApiValue.IGNORE,
     strain: ModeApiValue.OUTPUT_TENSOR_STATIC,
-    harmonicNumber: ModeApiValue.IGNORE,
     linearExaggeration: ModeApiValue.INPUT,
-    timeExpansion: ModeApiValue.IGNORE,
     voltageOutput: ModeApiValue.OUTPUT_SCALAR_STATIC,
     stretch: ModeApiValue.OUTPUT_TENSOR_STATIC
-  };
+  });
 
   modeId: string;
   modeName: string;
@@ -33,16 +28,16 @@ export class VoltageShear implements DistortionMode {
     if (!model.material) {return; }
     if (model.material.type === MaterialClass.Crystal) {
       const thickness = model.dimensions[1] / 1000;
-      model.strain[1][0] = -(model.material.e[1][5] * model.voltage) / (model.material.c[5][5] * Math.pow(10, Constants.C_EXP) * thickness);
-      const exaggeration = Math.pow(10, model.linearExaggeration);
+      model.modelValues.strain[1][0] = -(model.material.e[1][5] * model.modelValues.voltageInput) / (model.material.c[5][5] * Math.pow(10, Constants.C_EXP) * thickness);
+      const exaggeration = Math.pow(10, model.modelValues.linearExaggeration);
       model.basicGeometry.vertices.forEach((source, index) => {
         const target = model.modifiedGeometry.vertices[index];
         target.z = source.z;
-        target.x = source.x + source.y * model.strain[1][0] * exaggeration;
+        target.x = source.x + source.y * model.modelValues.strain[1][0] * exaggeration;
         target.y = source.y;
       })
     }
-    model.stretch = [
+    model.modelValues.stretch = [
       CalculationHelper.getElongation (model.basicGeometry, model.modifiedGeometry, 'x'),
       CalculationHelper.getElongation (model.basicGeometry, model.modifiedGeometry, 'y'),
       CalculationHelper.getElongation (model.basicGeometry, model.modifiedGeometry, 'z')
@@ -54,7 +49,7 @@ export class VoltageShear implements DistortionMode {
     this.modeName = 'Shear deformation from applied Voltage';
     this.override = new ModelValueDTO();
     this.override.linearExaggeration = 6;
-    this.override.voltage = 100;
+    this.override.voltageInput = 100;
     this.override.strain = [[0, 0, 0],
       [0, 0, 0],
       [0, 0, 0]];

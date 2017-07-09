@@ -9,18 +9,13 @@ import { CalculationHelper } from '../../physics-core/calculation.helper';
 
 export class PressureOpen implements DistortionMode {
   static supportedClasses = [MaterialClass.Ceramic_TP];
-  static api: ModeApi = {
+  static api: ModeApi = Object.assign( new ModeApi(), {
     externalForces: ModeApiValue.INPUT,
-    voltage: ModeApiValue.IGNORE,
-    frequency: ModeApiValue.IGNORE,
-    time: ModeApiValue.IGNORE,
     strain: ModeApiValue.OUTPUT_TENSOR_STATIC,
-    harmonicNumber: ModeApiValue.IGNORE,
     linearExaggeration: ModeApiValue.INPUT,
-    timeExpansion: ModeApiValue.IGNORE,
     voltageOutput: ModeApiValue.OUTPUT_SCALAR_STATIC,
     stretch: ModeApiValue.OUTPUT_TENSOR_STATIC
-  };
+  });
 
   modeId: string;
   modeName: string;
@@ -29,34 +24,35 @@ export class PressureOpen implements DistortionMode {
 
   clearCache() {}
 
-  distortModel(model: PlateService, time: number) {
-    if (!model.material) { return; }
-    if (model.material.type === MaterialClass.Ceramic_TP) {
+  distortModel(plateModel: PlateService, time: number) {
+    if (!plateModel.material) { return; }
+    if (plateModel.material.type === MaterialClass.Ceramic_TP) {
 
-      const cepsilon = model.material.c[2][2] * model.material.epsilon[2][2] * Math.pow(10, Constants.C_EXP + Constants.EPSILON_EXP);
-      const ksqr = (model.material.e[2][2] * model.material.e[2][2]) / cepsilon;
-      const thickness = model.dimensions[1] / 1000;
-      const c33 = model.material.c[2][2] * Math.pow(10, Constants.C_EXP);
+      const cepsilon = plateModel.material.c[2][2] * plateModel.material.epsilon[2][2] * Math.pow(10, Constants.C_EXP + Constants.EPSILON_EXP);
+      const ksqr = (plateModel.material.e[2][2] * plateModel.material.e[2][2]) / cepsilon;
+      const thickness = plateModel.dimensions[1] / 1000;
+      const c33 = plateModel.material.c[2][2] * Math.pow(10, Constants.C_EXP);
 
-      model.voltageOutput = (thickness * model.externalForces * model.material.e[2][2]) / (cepsilon * (1 + ksqr));
-      model.strain[2][2] = -model.externalForces / (c33 * (1 + ksqr));
-      model.stress[0][0] = model.stress[1][1] = model.strain[2][2] * model.material.c[0][2] * Math.pow(10, Constants.C_EXP);
-      const exaggeration = Math.pow(10, model.linearExaggeration);
-      let correction = (1 + model.strain[2][2] * exaggeration);
+      plateModel.modelValues.voltageOutput = (thickness * plateModel.modelValues.externalForces * plateModel.material.e[2][2]) / (cepsilon * (1 + ksqr));
+      plateModel.modelValues.strain[2][2] = - plateModel.modelValues.externalForces / (c33 * (1 + ksqr));
+      plateModel.modelValues.stress[0][0] = plateModel.modelValues.stress[1][1] =
+        plateModel.modelValues.strain[2][2] * plateModel.material.c[0][2] * Math.pow(10, Constants.C_EXP);
+      const exaggeration = Math.pow(10, plateModel.modelValues.linearExaggeration);
+      let correction = (1 + plateModel.modelValues.strain[2][2] * exaggeration);
       if (correction < 0) {
         correction = 0;
       }
-      model.basicGeometry.vertices.forEach((source, index) => {
-        const target = model.modifiedGeometry.vertices[index];
+      plateModel.basicGeometry.vertices.forEach((source, index) => {
+        const target = plateModel.modifiedGeometry.vertices[index];
         target.z = source.z;
         target.x = source.x;
         target.y = source.y * correction;
       })
 
-      model.stretch = [
-        CalculationHelper.getElongation (model.basicGeometry, model.modifiedGeometry, 'x'),
-        CalculationHelper.getElongation (model.basicGeometry, model.modifiedGeometry, 'y'),
-        CalculationHelper.getElongation (model.basicGeometry, model.modifiedGeometry, 'z')
+      plateModel.modelValues.stretch = [
+        CalculationHelper.getElongation (plateModel.basicGeometry, plateModel.modifiedGeometry, 'x'),
+        CalculationHelper.getElongation (plateModel.basicGeometry, plateModel.modifiedGeometry, 'y'),
+        CalculationHelper.getElongation (plateModel.basicGeometry, plateModel.modifiedGeometry, 'z')
       ];
     }
   }

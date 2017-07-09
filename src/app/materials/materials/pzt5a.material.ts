@@ -5,6 +5,9 @@ export const PZT5A = new Material(-4,
   'Lead Zirconate Titanate - 5A',
   MaterialClass.Ceramic_TP,
   7750,
+  0.015,
+  0.35,
+  65,
   [
     [12.1, 7.59, 7.54, 0, 0, 0],
     [7.59, 12.1, 7.54, 0, 0, 0],
@@ -19,5 +22,6 @@ export const PZT5A = new Material(-4,
     [0.811, 0, 0],
     [0, 0.811, 0],
     [0, 0, 0.735]
-  ]
+  ],
+  [74, 50]
 )

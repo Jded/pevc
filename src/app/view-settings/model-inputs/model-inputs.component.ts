@@ -45,7 +45,7 @@ export class ModelInputsComponent implements OnInit {
         frequency: state.frequency,
         harmonicNumber: state.harmonicNumber,
         externalForces: state.externalForces,
-        voltage: state.voltage,
+        voltage: state.voltageInput,
         timeExpansion: state.timeExpansion,
         linearExaggeration: state.linearExaggeration,
       })

@@ -9,18 +9,12 @@ import { CalculationHelper } from '../../physics-core/calculation.helper';
 
 export class PressureShorted implements DistortionMode {
   static supportedClasses = [MaterialClass.Ceramic_TP];
-  static api: ModeApi = {
+  static api: ModeApi = Object.assign( new ModeApi(), {
     externalForces: ModeApiValue.INPUT,
-    voltage: ModeApiValue.IGNORE,
-    frequency: ModeApiValue.IGNORE,
-    time: ModeApiValue.IGNORE,
     strain: ModeApiValue.OUTPUT_TENSOR_STATIC,
-    harmonicNumber: ModeApiValue.IGNORE,
     linearExaggeration: ModeApiValue.INPUT,
-    timeExpansion: ModeApiValue.IGNORE,
-    voltageOutput: ModeApiValue.IGNORE,
     stretch: ModeApiValue.OUTPUT_TENSOR_STATIC
-  };
+  });
   modeId: string;
   modeName: string;
   override: ModelValueDTO;
@@ -28,28 +22,29 @@ export class PressureShorted implements DistortionMode {
 
   clearCache() {}
 
-  distortModel(model: PlateService, time: number) {
-    if (!model.material) { return; }
-    if (model.material.type === MaterialClass.Ceramic_TP) {
-      model.voltage = 0;
-      model.strain[2][2] = -model.externalForces / (model.material.c[2][2] * Math.pow(10, Constants.C_EXP));
-      model.stress[0][0] = model.stress[1][1] = model.strain[2][2] * model.material.c[0][2] * Math.pow(10, Constants.C_EXP);
-      const exaggeration = Math.pow(10, model.linearExaggeration)
-      let correction = (1 + model.strain[2][2] * exaggeration);
+  distortModel(plateModel: PlateService, time: number) {
+    if (!plateModel.material) { return; }
+    if (plateModel.material.type === MaterialClass.Ceramic_TP) {
+      plateModel.modelValues.voltageInput = 0;
+      plateModel.modelValues.strain[2][2] = - plateModel.modelValues.externalForces / (plateModel.material.c[2][2] * Math.pow(10, Constants.C_EXP));
+      plateModel.modelValues.stress[0][0] = plateModel.modelValues.stress[1][1] =
+        plateModel.modelValues.strain[2][2] * plateModel.material.c[0][2] * Math.pow(10, Constants.C_EXP);
+      const exaggeration = Math.pow(10, plateModel.modelValues.linearExaggeration)
+      let correction = (1 + plateModel.modelValues.strain[2][2] * exaggeration);
       if (correction < 0) {
         correction = 0;
       }
-      model.basicGeometry.vertices.forEach((source, index) => {
-        const target = model.modifiedGeometry.vertices[index];
+      plateModel.basicGeometry.vertices.forEach((source, index) => {
+        const target = plateModel.modifiedGeometry.vertices[index];
         target.z = source.z;
         target.x = source.x;
         target.y = source.y * correction;
       })
     }
-    model.stretch = [
-      CalculationHelper.getElongation (model.basicGeometry, model.modifiedGeometry, 'x'),
-      CalculationHelper.getElongation (model.basicGeometry, model.modifiedGeometry, 'y'),
-      CalculationHelper.getElongation (model.basicGeometry, model.modifiedGeometry, 'z')
+    plateModel.modelValues.stretch = [
+      CalculationHelper.getElongation (plateModel.basicGeometry, plateModel.modifiedGeometry, 'x'),
+      CalculationHelper.getElongation (plateModel.basicGeometry, plateModel.modifiedGeometry, 'y'),
+      CalculationHelper.getElongation (plateModel.basicGeometry, plateModel.modifiedGeometry, 'z')
     ];
   }
 

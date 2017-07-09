@@ -5,6 +5,9 @@ export const PZT8 = new Material(-6,
   'Lead Zirconate Titanate - 8',
   MaterialClass.Ceramic_TP,
   7600,
+  0.002,
+  0.33,
+  800,
   [[13.7, 6.99, 7.11, 0, 0, 0],
     [6.99, 13.7, 7.11, 0, 0, 0],
     [7.11, 7.11, 12.3, 0, 0, 0],
@@ -18,5 +21,6 @@ export const PZT8 = new Material(-6,
   ], [[0.797, 0, 0],
     [0, 0.797, 0],
     [0, 0, 0.514]
-  ]
+  ],
+  [86, 71]
 )
