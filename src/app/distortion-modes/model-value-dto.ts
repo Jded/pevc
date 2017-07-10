@@ -10,13 +10,14 @@ export class ModelValueDTO extends Object {
   harmonicNumber?: number;
   voltageOutput?: number;
   stretch?: number[];
-  springStiffness?: number;
   dampingMass?: number;
   mechanicalDampingCoefficient?: number;
   internalFrequency?: number;
   amplitude?: number;
   powerOutput?: number;
+  maxPowerOutput?: number;
   substrateThickness?: number;
+  receiverResistance?: number;
 }
 /*kicek mega miszany kura
 klok zwykly lagodny kura

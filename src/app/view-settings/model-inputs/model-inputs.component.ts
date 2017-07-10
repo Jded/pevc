@@ -18,21 +18,30 @@ export class ModelInputsComponent implements OnInit {
   public ModeApiValue = ModeApiValue;
   modelInputs: FormGroup;
   currentModeApi$: Observable<ModeApi>;
+  fieldList$: Observable<object[]>;
   currentModeInputs$: Observable<ModelValueDTO>;
-  modelInputsConfig: object = {
-    frequency: ['', []],
-    harmonicNumber: ['', []],
-    externalForces: ['', []],
-    voltage: ['', []],
-    timeExpansion: ['', [Validators.required]],
-    linearExaggeration: ['', [Validators.required]],
-  }
+  modelInputsConfig: object;
 
   constructor(private fb: FormBuilder,
               private modelInputsStore: Store<ModelValueDTO>,
               private modeApiStore$: Store<ModeApi>
   ) {
     this.currentModeApi$ = modeApiStore$.select('modeApi');
+    this.modelInputsConfig = Object.assign({}, new ModeApi());
+    for (const prop in this.modelInputsConfig) {
+      if (1) {
+        this.modelInputsConfig[prop] = ['', []];
+      }
+    }
+    this.fieldList$ = this.currentModeApi$.map( (api: ModeApi) => {
+      const propList = [];
+      for (const prop in api) {
+        if (true) {
+          propList.push({name: prop, value: api[prop]})
+          }
+        }
+      return propList;
+    })
     this.modelInputs = this.fb.group(this.modelInputsConfig);
     this.currentModeInputs$ = this.modelInputsStore.select('modelInput');
 

@@ -1,9 +1,8 @@
-<div fxLayout="row" fxLayout.lt-lg="column">
-  <div fxFlex = "1 1 100%">
+<div>
+  <div fxLayout="row" fxLayout>
     <pevc-mode-selector></pevc-mode-selector>
     <pevc-material-selector></pevc-material-selector>
-    <pevc-model-inputs></pevc-model-inputs>
-
-    <button #toggleTime><span *ngIf="timer$ | async">Toggle off</span> <span *ngIf="!(timer$ | async)">Toggle on</span></button>
+    <button md-raised-button #toggleTime *ngIf = "(timerActive$ | async)"><span *ngIf="timer$ | async">Toggle off</span> <span *ngIf="!(timer$ | async)">Toggle on</span></button>
   </div>
-</div>
+  <pevc-model-inputs></pevc-model-inputs>
+  </div>

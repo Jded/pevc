@@ -5,6 +5,8 @@ import { Observable } from 'rxjs/Observable';
 import { MaterialManagerService } from '../core/material-manager.service';
 import { RenderParameters } from '../plate-renderer/render-parameters';
 import { TimerStartAction, TimerStopAction } from '../actions/render.actions';
+import { ModeApi } from '../distortion-modes/mode-api';
+import { ModeApiValue } from '../distortion-modes/mode-api-value.enum';
 
 @Component({
   selector: 'pevc-model-settings',
@@ -16,8 +18,10 @@ export class ModelSettingsComponent implements AfterViewInit {
 
   @ViewChild('toggleTime') toggleButton: ElementRef;
   timer$: Observable<boolean>;
+  timerActive$: Observable<boolean>;
 
-  constructor( private renderStore: Store<RenderParameters> ) {
+  constructor( private renderStore: Store<RenderParameters>, private apiStore: Store<ModeApi> ) {
+    this.timerActive$ = apiStore.select('modeApi').map((p: ModeApi) => p.time === ModeApiValue.INPUT)
     this.timer$ = this.renderStore.select('render').map((p: RenderParameters) => p.updateTime);
   }
 

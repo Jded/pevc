@@ -1,7 +1,5 @@
 <form [formGroup] = "modelSettings" novalidate>
-  <label>Simulation mode:
-    <select type="number" class="form-control" formControlName="mode" required>
-      <option *ngFor="let mode of modeOptions" [value]="mode['id']">{{mode['name']}}</option>
-    </select>
-  </label>
+  <md-select type="number" class="form-control" formControlName="mode" required placeholder="{{'simulationMode' | translation}}">
+    <md-option *ngFor="let mode of modeOptions" [value]="mode['id']">{{mode['name']}}</md-option>
+  </md-select>
 </form>

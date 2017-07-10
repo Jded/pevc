@@ -1,10 +1,17 @@
 <!--The whole content below can be removed with the new code.-->
 <div fxLayout="column">
   <md-toolbar>
-    <section>
+    <div class="md-toolbar-tools">
+    <span>
       <button md-raised-button routerLink="/home">Calculator</button>
       <button md-raised-button routerLink="/material">Materials</button>
-    </section>
+    </span>
+    <span flex></span>
+    <span>
+      <button md-raised-button routerLink="/home">Calculator</button>
+      <button md-raised-button routerLink="/material">Materials</button>
+    </span>
+    </div>
   </md-toolbar>
   <router-outlet></router-outlet>
 </div>

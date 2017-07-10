@@ -21,6 +21,7 @@ import { RenderTriggerEffects } from './effects/render-trigger.effect';
 import { modelApiReducer } from './reducers/model-api.reducer';
 import { modelInputsReducer } from './reducers/model-inputs.reducer';
 import { modelOutputReducer } from './reducers/model-outputs.reducer';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 const appRoutes = [{ path: 'home', component: HomeComponent },
@@ -36,6 +37,7 @@ const appRoutes = [{ path: 'home', component: HomeComponent },
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     UiComponentsModule,
     CoreModule,
     HomeModule,

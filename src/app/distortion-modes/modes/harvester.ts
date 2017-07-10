@@ -9,35 +9,33 @@ import { CalculationHelper } from '../../physics-core/calculation.helper';
 import { Silicon } from '../../materials/helper-material/silicon';
 
 class Cache {
-  mechanicalFrequency: number;
-  frequency: number;
-  ksi: number;
-  class: MaterialClass;
+  internalFrequency: number;
+  power: number;
+  maxPower: number;
+  displacement: number;
 }
 
-
-
-
-export class HarvesterTwo implements DistortionMode {
+export class Harvester implements DistortionMode {
   static supportedClasses = [MaterialClass.Ceramic_TP];
   static api: ModeApi = Object.assign( new ModeApi(), {
     externalForces: ModeApiValue.INPUT,
     frequency: ModeApiValue.INPUT,
-    strain: ModeApiValue.OUTPUT_TENSOR_STATIC,
+    strain: ModeApiValue.IGNORE,
     linearExaggeration: ModeApiValue.INPUT,
-    stretch: ModeApiValue.OUTPUT_TENSOR_STATIC,
-    springStiffness: ModeApiValue.INPUT,
+    stretch: ModeApiValue.IGNORE,
     dampingMass: ModeApiValue.INPUT,
     mechanicalDampingCoefficient: ModeApiValue.INPUT,
     internalFrequency: ModeApiValue.OUTPUT_SCALAR_STATIC,
     amplitude: ModeApiValue.INPUT,
-    powerOutput: ModeApiValue.OUTPUT_SCALAR_DYNAMIC,
-    substrateThickness: ModeApiValue.INPUT
+    powerOutput: ModeApiValue.OUTPUT_SCALAR_STATIC,
+    powerOutputMax: ModeApiValue.OUTPUT_SCALAR_STATIC,
+    substrateThickness: ModeApiValue.INPUT,
+    receiverResistance: ModeApiValue.INPUT
   });
   modeId: string;
   modeName: string;
   override: ModelValueDTO;
-  api = HarvesterTwo.api;
+  api = Harvester.api;
   calculationCache: Cache;
 
   clearCache() {
@@ -52,18 +50,8 @@ export class HarvesterTwo implements DistortionMode {
     if (this.calculationCache === undefined) {
       this.calculationCache = new Cache();
 
-/*
       const cepsilon = model.material.c[2][2] * model.material.epsilon[0][0] * Math.pow(10, Constants.C_EXP + Constants.EPSILON_EXP);
       const ksqr31 = (model.material.e[2][0] * model.material.e[2][0]) / cepsilon;
-      const electricalDampingCoefficient = ksqr31;
-      */
-      // const mechanicalFrequency = Math.sqrt(model.modelValues.springStiffness / model.modelValues.dampingMass);
-
-
-
-      const mechDamping = 1
-
-      const electricalDamping = 1
 
       const mP = model.dimensions[0] * model.dimensions[1] * model.dimensions[2] * model.material.density;
       const mS = model.dimensions[0] * model.modelValues.substrateThickness * model.dimensions[2] * Silicon.density;
@@ -79,6 +67,8 @@ export class HarvesterTwo implements DistortionMode {
       const hP = model.dimensions[1];
       const hS = model.modelValues.substrateThickness;
 
+      const capacitance = ( L * wS / hP ) * ( model.material.epsilon[2][2] -
+        (Math.pow(model.material.e[2][0], 2) / model.material.c[0][0]) )
 
       const Ep = model.material.youngModulus[0] /
         (1 - Math.pow(model.material.poisonRatio, 2));
@@ -94,68 +84,72 @@ export class HarvesterTwo implements DistortionMode {
       const EI = Ep * wP * hP * ( Math.pow(zP - zN, 2) + Math.pow(hP, 2) / 12) +
         Es * wS * hS * (Math.pow(zS - zN, 2) + Math.pow(hS, 2) / 12);
 
-      const omegaN = Math.sqrt( 3 * EI / ((m + 33 * mT / 140) * Math.pow(L , 3)))
+      const resonantFrequency = Math.sqrt( 3 * EI / ((m + 33 * mT / 140) * Math.pow(L , 3)))
 
-      const frequency = omegaN / (2 * Math.PI);
+      const outputFrequency = resonantFrequency / (2 * Math.PI);
 
-      const mechanicalDampingRation = model.modelValues.mechanicalDampingCoefficient / (2 * model.modelValues.dampingMass * resonantFrequency);
-      // const electricalDampingDimensionless = electricalDampingCoefficient / (2 * model.modelValues.dampingMass * mechanicalFrequency);
-      const frequencyRelation = model.modelValues.frequency / mechanicalFrequency;
+      const electricalDampingCoeff = ksqr31 / (capacitance * resonantFrequency)
 
+      const mechanicalDamping = model.modelValues.mechanicalDampingCoefficient / (2 * m * resonantFrequency);
 
-      const powerNominator = mass
-        * mechanicalDampingRation
+      const electricalDamping = electricalDampingCoeff / (2 * m * resonantFrequency);
+
+      const frequencyRelation = model.modelValues.frequency / resonantFrequency;
+
+      const maxDisplacementNominator = frequencyRelation * model.modelValues.amplitude;
+
+      const powerNominator = m
+        * electricalDamping
         * Math.pow(model.modelValues.amplitude, 2)
         * frequencyRelation
         * Math.pow(model.modelValues.frequency, 3)
 
+      const powerOrDisplacementDenominator = Math.pow(1 - Math.pow(frequencyRelation, 2), 2) +
+        Math.pow(2 * (electricalDamping + mechanicalDamping) * frequencyRelation, 2)
 
-      const powerMaxNominator = mass *
+      const powerMaxNominator = m
+        * electricalDamping
+        * Math.pow(model.modelValues.amplitude, 2)
+        * frequencyRelation
+        * Math.pow(model.modelValues.frequency, 3)
 
+      const powerMaxDenominator = 4 *
+        Math.pow(2 * (electricalDamping + mechanicalDamping), 2)
 
-      const E_I =
+      const power = powerNominator / powerOrDisplacementDenominator;
+      const maxPower = powerMaxNominator / powerMaxDenominator;
+      const maxDisplacement = maxDisplacementNominator / powerOrDisplacementDenominator;
 
-      const systemFrequency = (1 / 2 * Math.PI) * Math.sqrt( 3 * E_I / ()} )
-
-      const powerDenominator = (1 - frequencyRelation * frequencyRelation) * (1 - frequencyRelation * frequencyRelation) +
-        (2 * )
-
-      a
-      const c33 = model.material.c[2][2] * Math.pow(10, Constants.C_EXP);
-      if (!(model.modelValues.harmonicNumber % 2)) {
-        const ksqr_t = ksqr / (1 + ksqr);
-        const ksi = CalculationHelper.getKsi(ksqr_t, h, model.modelValues.harmonicNumber);
-        this.calculationCache.ksi = ksi;
-        this.calculationCache.frequency = ksi * Math.sqrt(c33 * (1 + ksqr) / model.material.density);
-      } else {
-        const coeff = Math.sqrt((c33 * (1 + ksqr)) / model.material.density);
-        this.calculationCache.frequency = (coeff * model.modelValues.harmonicNumber * Math.PI) / h;
-        this.calculationCache.ksi = model.modelValues.harmonicNumber * Math.PI / h;
-      }
+      this.calculationCache.internalFrequency = outputFrequency;
+      this.calculationCache.power = power;
+      this.calculationCache.maxPower = maxPower;
+      this.calculationCache.displacement = maxDisplacement;
     }
 
-    model.modelValues.frequency = this.calculationCache.frequency;
-    const constantAmplitude = 0.5 * model.dimensions[1] / model.dimensions[0];
+    model.modelValues.internalFrequency = this.calculationCache.internalFrequency;
     model.basicGeometry.vertices.forEach((source, index) => {
       const target = model.modifiedGeometry.vertices[index];
       target.z = source.z;
       target.x = source.x;
       target.y = source.y * (1 +
-        0.1 * Math.cos(source.y / 1000 * this.calculationCache.ksi) *
-        Math.cos(this.calculationCache.frequency * time / (1000 * timeModifier)));
+        this.calculationCache.displacement *
+        Math.cos(model.modelValues.frequency * time / (1000 * timeModifier)));
     });
-    model.modelValues.voltageOutput = initVoltage * Math.cos(this.calculationCache.frequency * time / (1000 * timeModifier));
-  }
+    model.modelValues.powerOutput = this.calculationCache.power;
+    model.modelValues.maxPowerOutput = this.calculationCache.maxPower;
+    model.modelValues.voltageOutput = Math.sqrt(model.modelValues.powerOutput / Math.pow (model.modelValues.receiverResistance, 2))  }
 
   constructor() {
-    this.modeId = 'Energy harvester 1';
+    this.modeId = 'Energy harvester';
     this.modeName = `Vibration energy harvesting device, made of micro piezoelectric transducer in d31 mode on a silicate substrate.
      Only the transducer is visualized`;
     this.override = new ModelValueDTO();
     this.override.externalForces = 100;
     this.override.linearExaggeration = 9;
-    this.override.strain = [[0, 0, 0],
-      [0, 0, 0],
-      [0, 0, 0]];
+    this.override.receiverResistance = 10;
+    this.override.substrateThickness = 0.05;
+    this.override.dampingMass = 3;
+    this.override.mechanicalDampingCoefficient = 0.5;
+    this.override.amplitude = 1;
   }
 }

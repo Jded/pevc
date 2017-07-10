@@ -11,11 +11,12 @@ export class ModeApi {
   harmonicNumber: ModeApiValue = ModeApiValue.IGNORE;
   voltageOutput: ModeApiValue = ModeApiValue.IGNORE;
   stretch: ModeApiValue = ModeApiValue.IGNORE;
-  springStiffness: ModeApiValue = ModeApiValue.IGNORE;
   dampingMass: ModeApiValue = ModeApiValue.IGNORE;
-  mechanicalDampingCoefficient = ModeApiValue.IGNORE;
+  mechanicalDampingCoefficient: ModeApiValue = ModeApiValue.IGNORE;
   internalFrequency: ModeApiValue = ModeApiValue.IGNORE;
   amplitude: ModeApiValue = ModeApiValue.IGNORE;
   powerOutput: ModeApiValue = ModeApiValue.IGNORE;
+  maxPowerOutput: ModeApiValue = ModeApiValue.IGNORE;
   substrateThickness: ModeApiValue = ModeApiValue.IGNORE;
+  receiverResistance: ModeApiValue = ModeApiValue.IGNORE;
 }

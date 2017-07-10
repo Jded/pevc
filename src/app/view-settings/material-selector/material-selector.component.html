@@ -1,7 +1,5 @@
 <form [formGroup] = "modelSettings" novalidate>
-  <label>Material:
-    <select class="form-control" formControlName="material" required>
-      <option *ngFor="let material of materialOptions$ | async" [value]="material['id']">{{material['name']}}</option>
-    </select>
-  </label>
+  <md-select type="number" class="form-control" formControlName="material" required placeholder="{{'chooseMaterial' | translation}}">
+    <md-option *ngFor="let material of materialOptions$ | async" [value]="material['id']">{{material['name']}}</md-option>
+  </md-select>
 </form>

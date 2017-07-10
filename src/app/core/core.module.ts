@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { PlateService } from './plate.service';
 import { MaterialManagerService } from './material-manager.service';
 import { ModeFactoryService } from './mode-factory.service';
+import { TranslationService } from './translation.service';
 
 @NgModule({
   imports: [
@@ -11,7 +12,8 @@ import { ModeFactoryService } from './mode-factory.service';
   providers: [
     PlateService,
     MaterialManagerService,
-    ModeFactoryService
+    ModeFactoryService,
+    TranslationService
   ]
 })
 export class CoreModule { }

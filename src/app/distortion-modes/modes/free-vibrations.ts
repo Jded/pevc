@@ -10,7 +10,6 @@ import { PlateService } from '../../core/plate.service';
 class Cache {
   frequency: number;
   ksi: number;
-  class: MaterialClass;
 }
 
 export class FreeVibrations implements DistortionMode {

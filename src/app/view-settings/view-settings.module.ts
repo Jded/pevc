@@ -8,12 +8,14 @@ import { SharedModule } from '../shared/shared.module';
 import { ModeSelectorComponent } from './mode-selector/mode-selector.component';
 import { MaterialSelectorComponent } from './material-selector/material-selector.component';
 import { ModelInputsComponent } from './model-inputs/model-inputs.component';
+import { UiComponentsModule } from '../ui-components/ui-components.module';
 
 @NgModule({
   imports: [
     CommonModule,
     SharedModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    UiComponentsModule
   ],
   declarations: [
     PlateSettingsComponent,
