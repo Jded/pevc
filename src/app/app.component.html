@@ -1,16 +1,16 @@
 <!--The whole content below can be removed with the new code.-->
-<div fxLayout="column">
+<div>
   <md-toolbar>
-    <div class="md-toolbar-tools">
-    <span>
-      <button md-raised-button routerLink="/home">Calculator</button>
-      <button md-raised-button routerLink="/material">Materials</button>
-    </span>
-    <span flex></span>
-    <span>
-      <button md-raised-button routerLink="/home">Calculator</button>
-      <button md-raised-button routerLink="/material">Materials</button>
-    </span>
+    <div fxLayout="row" fxLayoutAlign="space-around">
+      <span>
+        <button md-raised-button routerLink="/home">Calculator</button>
+        <button md-raised-button routerLink="/material">Materials</button>
+      </span>
+      <span flex></span>
+      <span>
+        <button md-raised-button (click)="setPL()">PL</button>
+        <button md-raised-button (click)="setEN()">EN</button>
+      </span>
     </div>
   </md-toolbar>
   <router-outlet></router-outlet>

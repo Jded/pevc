@@ -2,42 +2,42 @@
   <form [formGroup] = "plateParameters" novalidate>
     <div fxFlex = "1 1 100%">
       <md-input-container>
-        <label>Plate X:</label>
+        <label>{{'plateAxis' | translation}} X:</label>
           <input mdInput type="number" class="form-control" formControlName="plateX" required/>
           <div *ngIf = "formErrors['plateX']">
             <p *ngFor = "let error of formErrors['plateX']">{{error | errorTranslator:10000}}</p>
           </div>
       </md-input-container>
       <md-input-container>
-        <label>Plate Y:</label>
+        <label>{{'plateAxis' | translation}} Y:</label>
           <input mdInput type="number" class="form-control" formControlName="plateY" required/>
           <div *ngIf = "formErrors['plateY']">
             <p *ngFor = "let error of formErrors['plateY']">{{error | errorTranslator:10000}}</p>
           </div>
       </md-input-container>
       <md-input-container>
-        <label>Plate Z:</label>
+        <label>{{'plateAxis' | translation}} Z:</label>
           <input mdInput type="number" class="form-control" formControlName="plateZ" required/>
           <div *ngIf = "formErrors['plateZ']">
             <p *ngFor = "let error of formErrors['plateZ']">{{error | errorTranslator:10000}}</p>
           </div>
       </md-input-container>
       <md-input-container>
-        <label>Resolution X:</label>
+        <label>{{'plateResolution' | translation}} X:</label>
           <input mdInput type="number" class="form-control" formControlName="resolutionX" required/>
           <div *ngIf = "formErrors['resolutionX']">
             <p *ngFor = "let error of formErrors['resolutionX']">{{error | errorTranslator:1000}}</p>
           </div>
       </md-input-container>
       <md-input-container>
-        <label>Resolution Y:</label>
+        <label>{{'plateResolution' | translation}} Y:</label>
           <input mdInput type="number" class="form-control" formControlName="resolutionY" required/>
           <div *ngIf = "formErrors['resolutionY']">
             <p *ngFor = "let error of formErrors['resolutionY']">{{error | errorTranslator:1000}}</p>
           </div>
       </md-input-container>
       <md-input-container>
-        <label>Resolution Z: </label>
+        <label>{{'plateResolution' | translation}} Z:</label>
           <input mdInput type="number" class="form-control" formControlName="resolutionZ" required/>
           <div *ngIf = "formErrors['resolutionZ']">
             <p *ngFor = "let error of formErrors['resolutionZ']">{{error | errorTranslator:1000}}</p>

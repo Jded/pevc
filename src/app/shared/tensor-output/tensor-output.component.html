@@ -1,0 +1,11 @@
+<md-grid-list [cols]="tensorData.length" gutterSize="10px" rowHeight="2:1">
+  <div *ngFor="let column of tensorData">
+  <span *ngIf="!!column['length']">
+    <md-grid-tile *ngFor="let row of column"> {{row}}
+    </md-grid-tile>
+  </span>
+    <md-grid-tile *ngIf="!column['length']">
+    {{column}}
+  </md-grid-tile>
+  </div>
+</md-grid-list>

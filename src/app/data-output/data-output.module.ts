@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { TimeDisplayComponent } from './time-display/time-display.component';
 import { DataOutputComponent } from './data-output.component';
 import { PlotterComponent } from './plotter/plotter.component';
-import { TensorOutputComponent } from './tensor-output/tensor-output.component';
-import { NumberOutputComponent } from './number-output/number-output.component';
 import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
@@ -15,9 +13,7 @@ import { SharedModule } from '../shared/shared.module';
   declarations: [
     DataOutputComponent,
     TimeDisplayComponent,
-    PlotterComponent,
-    TensorOutputComponent,
-    NumberOutputComponent
+    PlotterComponent
   ],
   exports: [
     DataOutputComponent

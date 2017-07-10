@@ -1,8 +1,10 @@
 <div>
-  <div fxLayout="row" fxLayout>
-    <pevc-mode-selector></pevc-mode-selector>
-    <pevc-material-selector></pevc-material-selector>
-    <button md-raised-button #toggleTime *ngIf = "(timerActive$ | async)"><span *ngIf="timer$ | async">Toggle off</span> <span *ngIf="!(timer$ | async)">Toggle on</span></button>
+  <div fxLayout="row">
+    <pevc-mode-selector style="margin:5px;"></pevc-mode-selector>
+    <pevc-material-selector style="margin:5px;"></pevc-material-selector>
+    <div #toggleTime style="margin:5px;">
+      <button md-raised-button  *ngIf = "(timerActive$ | async)"><span *ngIf="timer$ | async">Toggle off</span> <span *ngIf="!(timer$ | async)">Toggle on</span></button>
+    </div>
   </div>
   <pevc-model-inputs></pevc-model-inputs>
   </div>

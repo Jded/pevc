@@ -18,7 +18,34 @@ export const Translator = {
   substrateThickness: {'pl': 'Grubość podłoża', 'en': 'Substrate thickness'},
   receiverResistance: {'pl': 'Opór odbiornika', 'en': 'Receiver resistance'},
   simulationMode: {'pl': 'Tryb symulacji', 'en': 'Simulation mode'},
-  chooseMaterial: {'pl': 'Wybierz materiał', 'en': 'Choose material'}
+  chooseMaterial: {'pl': 'Wybierz materiał', 'en': 'Choose material'},
+  plateAxis: {'pl': 'Oś płyty', 'en': 'Plate axis'},
+  plateResolution: {'pl': 'Rozdzielczość płyty w osi', 'en': 'Plate resolution'},
+  view: {'pl': 'Przeglądaj', 'en': 'View'},
+  edit: {'pl': 'Edytuj', 'en': 'Edit'},
+  crystal: {'pl': 'Kryształ', 'en': 'Crystal'},
+  ceramic_tp: {'pl': 'Ceramiczny', 'en': 'Ceramic'},
+  ceramic_lp: {'pl': 'Ceramiczny, spolaryzowany w osi długości', 'en': 'Ceramic, longitude poling'},
+  name: {'pl': 'Nazwa', 'en': 'Name'},
+  type: {'pl': 'Type', 'en': 'Type'},
+  Quartz: {'pl': 'Kwarc', 'en': 'Quartz'},
+  Langasite: {'pl': 'Langazyt', 'en': 'Langasite'},
+  'Barium titanate': {'pl': 'Tytanek Baru', 'en': 'Barium titanate'},
+  'Lead Zirconate Titanate - 4': {'pl': 'Tytanian-cyrkonian ołowiu - 4', 'en': 'Lead Zirconate Titanate - 4'},
+  'Lead Zirconate Titanate - 5A': {'pl': 'Tytanian-cyrkonian ołowiu - 5A', 'en': 'Lead Zirconate Titanate - 5A'},
+  'Lead Zirconate Titanate - 5H': {'pl': 'Tytanian-cyrkonian ołowiu - 5H', 'en': 'Lead Zirconate Titanate - 5H'},
+  'Lead Zirconate Titanate - 8': {'pl': 'Tytanian-cyrkonian ołowiu - 8', 'en': 'Lead Zirconate Titanate - 8'},
+  density: {'pl': 'Gęstość', 'en': 'Density'},
+  dissipationFactor: {'pl': 'Współczynnik rozporszenia', 'en': 'Dissipation factor'},
+  poisonRatio: {'pl': 'Współczynnik Poissona', 'en': 'Poisson\'s ratio'},
+  mechQ: {'pl': 'Mechaniczny współczynnik Q', 'en': 'Mechanical Q factor'},
+  c: {'pl': 'Współczynnik c', 'en': 'C factor'},
+  e: {'pl': 'Współczynnik e', 'en': 'E factor'},
+  epsilon_fact: {'pl': 'Współczynnik epsilon', 'en': 'Epsilon factor'},
+  youngModulus: {'pl': 'Moduł Younga', 'en': 'Young modulus'}, /*
+  Langasite: {'pl': 'Langazyt', 'en': 'Langasite'},
+  Langasite: {'pl': 'Langazyt', 'en': 'Langasite'},
+  */
 }
 
 // {'pl': '', 'en': ''}

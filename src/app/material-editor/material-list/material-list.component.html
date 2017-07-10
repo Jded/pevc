@@ -1,0 +1,7 @@
+<div *ngFor="let material of materialOptions$ | async">
+  <div fxFlexLayout = "row" fxLayoutAlign="space-between center" class="row">
+    <span fxFlex="1 1 100%">{{material['name']}}</span>
+    <button fxFlex="0 0 auto" md-raised-button routerLink="/material/view/{{material['id']}}">{{'view' | translation}}</button>
+    <button fxFlex="0 0 auto" md-raised-button routerLink="/material/edit/{{material['id']}}">{{'edit' | translation}}</button>
+  </div>
+</div>

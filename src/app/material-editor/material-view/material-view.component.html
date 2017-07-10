@@ -1,0 +1,56 @@
+<div fxFlexLayout = "row" fxLayoutAlign="space-between center" class="row">
+  <span fxFlex="0 0 30%">{{'name' | translation}}</span>
+  <span fxFlex="1 1 auto">{{(materialDetails$ | async).name | translation}}</span>
+</div>
+<div fxFlexLayout = "row" fxLayoutAlign="space-between center" class="row">
+  <span fxFlex="0 0 30%">{{'type' | translation}}</span>
+  <span fxFlex="1 1 auto">{{(materialDetails$ | async).type | materialType | translation}}</span>
+</div>
+<div fxFlexLayout = "row" fxLayoutAlign="space-between center" class="row">
+  <span fxFlex="0 0 30%">{{'density' | translation}}</span>
+  <span fxFlex="1 1 auto">{{(materialDetails$ | async).density}}</span>
+</div>
+<div fxFlexLayout = "row" fxLayoutAlign="space-between center" class="row">
+  <span fxFlex="0 0 30%">{{'dissipationFactor' | translation}}</span>
+  <span fxFlex="1 1 auto">{{(materialDetails$ | async).dissipationFactor}}</span>
+</div>
+<div fxFlexLayout = "row" fxLayoutAlign="space-between center" class="row">
+  <span fxFlex="0 0 30%">{{'poisonRatio' | translation}}</span>
+  <span fxFlex="1 1 auto">{{(materialDetails$ | async).poisonRatio}}</span>
+</div>
+<div fxFlexLayout = "row" fxLayoutAlign="space-between center" class="row">
+  <span fxFlex="0 0 30%">{{'mechQ' | translation}}</span>
+  <span fxFlex="1 1 auto">{{(materialDetails$ | async).mechQ}}</span>
+</div>
+<div fxFlexLayout = "row" fxLayoutAlign="space-between center" class="row">
+  <span fxFlex="0 0 30%">{{'c' | translation}}</span>
+  <span fxFlex="1 1 auto">
+    <md-card>
+      <pevc-tensor-output [tensorData]="(materialDetails$ | async).c"></pevc-tensor-output>
+    </md-card>
+  </span>
+</div>
+<div fxFlexLayout = "row" fxLayoutAlign="space-between center" class="row">
+  <span fxFlex="0 0 30%">{{'e' | translation}}</span>
+  <span fxFlex="1 1 auto">
+    <md-card>
+      <pevc-tensor-output [tensorData]="(materialDetails$ | async).e"></pevc-tensor-output>
+    </md-card>
+  </span>
+</div>
+<div fxFlexLayout = "row" fxLayoutAlign="space-between center" class="row">
+  <span fxFlex="0 0 30%">{{'epsilon' | translation}}</span>
+  <span fxFlex="1 1 auto">
+    <md-card>
+      <pevc-tensor-output [tensorData]="(materialDetails$ | async).epsilon"></pevc-tensor-output>
+    </md-card>
+  </span>
+</div>
+<div fxFlexLayout = "row" fxLayoutAlign="space-between center" class="row">
+  <span fxFlex="0 0 30%">{{'youngModulus' | translation}}</span>
+  <span fxFlex="1 1 auto">
+    <md-card>
+      <pevc-tensor-output [tensorData]="(materialDetails$ | async).youngModulus"></pevc-tensor-output>
+    </md-card>
+  </span>
+</div>

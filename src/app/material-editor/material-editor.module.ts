@@ -2,12 +2,22 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialEditorComponent } from './material-editor.component';
 import { MaterialModule } from '@angular/material';
+import { MaterialListComponent } from './material-list/material-list.component';
+import { MaterialViewComponent } from './material-view/material-view.component';
+import { MaterialEditComponent } from './material-edit/material-edit.component';
+import { NoMaterialComponent } from './no-material/no-material.component';
+import { SharedModule } from '../shared/shared.module';
+import { RouterModule } from '@angular/router';
+import { UiComponentsModule } from '../ui-components/ui-components.module';
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    SharedModule,
+    RouterModule,
+    UiComponentsModule
   ],
-  declarations: [MaterialEditorComponent],
+  declarations: [MaterialEditorComponent, MaterialListComponent, MaterialViewComponent, MaterialEditComponent, NoMaterialComponent],
   exports: [MaterialEditorComponent]
 })
 export class MaterialEditorModule { }

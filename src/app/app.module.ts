@@ -12,7 +12,6 @@ import { StoreModule } from '@ngrx/store';
 import { plateReducer } from './reducers/plate.reducer';
 import { materialOptionsReducer } from './reducers/material-options.reducer';
 import { materialActiveReducer } from './reducers/material-active.reducer';
-import { materialEditedReducer } from './reducers/material-edited.reducer';
 import { modeReducer } from './reducers/mode.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import { MaterialModeInteractionEffects } from './effects/material-mode-interaction.effect';
@@ -22,10 +21,28 @@ import { modelApiReducer } from './reducers/model-api.reducer';
 import { modelInputsReducer } from './reducers/model-inputs.reducer';
 import { modelOutputReducer } from './reducers/model-outputs.reducer';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoMaterialComponent } from './material-editor/no-material/no-material.component';
+import { MaterialViewComponent } from './material-editor/material-view/material-view.component';
+import { MaterialEditComponent } from './material-editor/material-edit/material-edit.component';
 
 
 const appRoutes = [{ path: 'home', component: HomeComponent },
-  { path: 'material',      component: MaterialEditorComponent },
+  { path: 'material',
+    component: MaterialEditorComponent,
+    children: [
+      {
+        path: '',
+        component: NoMaterialComponent
+      },
+      {
+        path: 'view/:id',
+        component: MaterialViewComponent
+      },
+      {
+        path: 'edit/:id',
+        component: MaterialEditComponent
+      }
+    ]},
   { path: '',
     redirectTo: '/home',
     pathMatch: 'full'
@@ -48,7 +65,6 @@ const appRoutes = [{ path: 'home', component: HomeComponent },
       render: renderReducer,
       materialOptions: materialOptionsReducer,
       materialActive: materialActiveReducer,
-      materialEdited: materialEditedReducer,
       mode: modeReducer,
       modeApi: modelApiReducer,
       modelInput: modelInputsReducer,
