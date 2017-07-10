@@ -49,15 +49,14 @@ export class ModelInputsComponent implements OnInit {
       .withLatestFrom(this.currentModeApi$, this.currentModeInputs$)
       .subscribe( ([formData, modeApi, oldValues]) => this.internalInputValuesChange(formData, modeApi, oldValues));
 
-    this.currentModeInputs$.subscribe((state: ModelValueDTO) => {
-      this.modelInputs.patchValue({
-        frequency: state.frequency,
-        harmonicNumber: state.harmonicNumber,
-        externalForces: state.externalForces,
-        voltage: state.voltageInput,
-        timeExpansion: state.timeExpansion,
-        linearExaggeration: state.linearExaggeration,
-      })
+    this.currentModeInputs$.withLatestFrom(this.currentModeApi$).subscribe(([state, currentApi]: [ModelValueDTO, ModeApi]) => {
+      const patchObject = {};
+      for (const prop in currentApi) {
+        if (currentApi[prop] === ModeApiValue.INPUT) {
+          patchObject[prop] = state[prop];
+        }
+      }
+      this.modelInputs.patchValue(patchObject)
     })
   }
 

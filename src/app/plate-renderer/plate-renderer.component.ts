@@ -7,6 +7,7 @@ import { PlateState } from '../physics-core/plate-state';
 import { Observable } from 'rxjs/Observable';
 import { PlateService } from '../core/plate.service';
 import { RenderParameters } from './render-parameters';
+import { ModelOutputsChangeAction } from '../actions/model.actions';
 
 @Component({
   selector: 'pevc-plate-renderer',
@@ -39,6 +40,7 @@ export class PlateRendererComponent implements OnInit {
   private setupEvents() {
     this.plateState$.subscribe((state: PlateState) => {
       this.plateService.consumeState(state);
+      this.store.dispatch(new ModelOutputsChangeAction(this.plateService.getOutputValues()));
       this.renderer.swapGeometry();
       this.renderer.render();
     })

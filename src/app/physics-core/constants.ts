@@ -8,5 +8,6 @@ export class Constants {
   public static ELECTRONIC_CHARGE = 1.602 // charge of electron
   public static ELECTRONIC_CHARGE_EXP = -19
   public static C_EXP = 10 // exponent for all the c[xy] values in piezoelectric constants
-  public static EPSILON_EXP = 12.57
+  public static EPSILON_EXP = -8;
+  public static YOUNG_MODULUS_EXPONENT = 9;
 }

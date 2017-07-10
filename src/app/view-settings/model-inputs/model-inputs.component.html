@@ -1,6 +1,6 @@
 <form [formGroup] = "modelInputs" novalidate>
   <span *ngFor="let field of (fieldList$ | async)">
-    <md-input-container *ngIf="field['value'] === ModeApiValue.INPUT">
+    <md-input-container *ngIf="field['value'] === ModeApiValue.INPUT && field['name'] !== 'time'">
       <label>{{field['name'] | translation}}:</label>
       <input type="number" mdInput class="form-control" [formControlName]="field['name']" required/>
     </md-input-container>

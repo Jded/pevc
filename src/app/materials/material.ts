@@ -53,9 +53,9 @@ export class Material {
                dissipationFactor: number = 1,
                poisonRatio: number = 0,
                mechQ: number = 0,
-               c: number[][] = defaultC,
-               e: number[][] = defaultE,
-               epsilon: number[][] = defaultEpsilon,
+               c: number[][] = defaultC, // s
+               e: number[][] = defaultE, // d
+               epsilon: number[][] = defaultEpsilon, // epsilon
                young: number[] = defaultYoung
   ) {
     this.id = id;

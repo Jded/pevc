@@ -21,7 +21,7 @@ export class PlateService extends PlateState {
 
   public static initState: PlateState = {
     resolution:  [10, 50, 10],
-    dimensions:  [10, 1, 10],
+    dimensions:  [3, 0.002, 2.4],
     boundaryConditions:  [],
   }
 
@@ -136,9 +136,11 @@ export class PlateService extends PlateState {
     Object.assign(this, state);
     this.mode.clearCache();
     this.fillGeometries();
+    this.distortModel();
   }
 
   setInputValues (data: ModelValueDTO) {
+    console.log(data)
     if (!this.mode) { return; }
     this.mode.clearCache();
     for (const prop in this.mode.api) {

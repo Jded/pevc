@@ -19,4 +19,6 @@ export class ModeApi {
   maxPowerOutput: ModeApiValue = ModeApiValue.IGNORE;
   substrateThickness: ModeApiValue = ModeApiValue.IGNORE;
   receiverResistance: ModeApiValue = ModeApiValue.IGNORE;
+  beamDistance: ModeApiValue = ModeApiValue.IGNORE;
+  electricalDampingCoefficient: ModeApiValue = ModeApiValue.IGNORE;
 }

@@ -5,7 +5,9 @@ import { FreeVibrations } from '../distortion-modes/modes/free-vibrations';
 import { PressureOpen } from '../distortion-modes/modes/pressure-open';
 import { PressureShorted } from '../distortion-modes/modes/pressure-shorted';
 import { VoltageShear } from '../distortion-modes/modes/voltage-shear';
-import { Harvester } from '../distortion-modes/modes/harvester';
+import { HarvesterE31 } from '../distortion-modes/modes/harvester-e31';
+import { HarvesterBase } from '../distortion-modes/modes/harvester-base';
+import { HarvesterE33 } from '../distortion-modes/modes/harvester-e33';
 // import { VoltageShear } from './modes/voltageInput-shear';
 
 @Injectable()
@@ -17,7 +19,9 @@ export class ModeFactoryService {
     {name: 'Pressure Open', id: ModesEnum.PressureOpen},
     {name: 'Pressure Shorted', id: ModesEnum.PressureShorted},
     {name: 'VoltageShear', id: ModesEnum.VoltageShear},
-    {name: 'Harvester', id: ModesEnum.Harvester}
+    {name: 'Harvester Base', id: ModesEnum.HarvesterBase},
+    {name: 'Harvester E31', id: ModesEnum.HarvesterE31},
+    {name: 'Harvester E33', id: ModesEnum.HarvesterE33}
   ]
 
   defaultMode = ModesEnum.FreeVibrations;
@@ -36,8 +40,12 @@ export class ModeFactoryService {
         return PressureShorted;
       case ModesEnum.VoltageShear:
         return VoltageShear;
-      case ModesEnum.Harvester:
-        return Harvester;
+      case ModesEnum.HarvesterE31:
+        return HarvesterE31;
+      case ModesEnum.HarvesterE33:
+        return HarvesterE33;
+      case ModesEnum.HarvesterBase:
+        return HarvesterBase;
     }
   }
 }

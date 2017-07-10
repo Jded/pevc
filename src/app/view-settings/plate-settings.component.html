@@ -2,21 +2,21 @@
   <form [formGroup] = "plateParameters" novalidate>
     <div fxFlex = "1 1 100%">
       <md-input-container>
-        <label>{{'plateAxis' | translation}} X:</label>
+        <label>{{'plateAxis' | translation}} X (mm):</label>
           <input mdInput type="number" class="form-control" formControlName="plateX" required/>
           <div *ngIf = "formErrors['plateX']">
             <p *ngFor = "let error of formErrors['plateX']">{{error | errorTranslator:10000}}</p>
           </div>
       </md-input-container>
       <md-input-container>
-        <label>{{'plateAxis' | translation}} Y:</label>
+        <label>{{'plateAxis' | translation}} Y (mm):</label>
           <input mdInput type="number" class="form-control" formControlName="plateY" required/>
           <div *ngIf = "formErrors['plateY']">
             <p *ngFor = "let error of formErrors['plateY']">{{error | errorTranslator:10000}}</p>
           </div>
       </md-input-container>
       <md-input-container>
-        <label>{{'plateAxis' | translation}} Z:</label>
+        <label>{{'plateAxis' | translation}} Z (mm):</label>
           <input mdInput type="number" class="form-control" formControlName="plateZ" required/>
           <div *ngIf = "formErrors['plateZ']">
             <p *ngFor = "let error of formErrors['plateZ']">{{error | errorTranslator:10000}}</p>

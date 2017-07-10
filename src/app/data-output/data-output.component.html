@@ -3,15 +3,17 @@
 
 <div *ngIf="(currentModeApi$ | async).time === ModeApiValue.INPUT">
   <pevc-time-display></pevc-time-display>
+</div>
+<div *ngIf="(scalarDynamicOutput$ | async)">
   <pevc-plotter [scalarStream$] = "scalarDynamicOutput$" [tensorStream$] = "tensorDynamicOutput$"></pevc-plotter>
 </div>
 
 <div  *ngFor = "let dataPiece of (tensorStaticOutput$ | async)" fxFlexLayout = "row" fxLayoutAlign="space-between center" class="row">
   <span fxFlex="0 0 30%">{{dataPiece['name'] | translation}}</span>
-  <span fxFlex="1 1 auto"><pevc-tensor-output [tensorData]="dataPiece['value']"></pevc-tensor-output></span>
+  <span fxFlex="1 1 70%"><pevc-tensor-output [tensorData]="dataPiece['value']"></pevc-tensor-output></span>
 </div>
 
 <div  *ngFor = "let dataPiece of (scalarStaticOutput$ | async)" fxFlexLayout = "row" fxLayoutAlign="space-between center" class="row">
   <span fxFlex="0 0 30%">{{dataPiece['name'] | translation}}</span>
-  <span fxFlex="1 1 auto">{{dataPiece['value']}}</span>
+  <span fxFlex="1 1 70%">{{dataPiece['value']}}</span>
 </div>

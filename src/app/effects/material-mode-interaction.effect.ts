@@ -16,6 +16,7 @@ import { ModelValueDTO } from '../distortion-modes/model-value-dto';
 import { ReRenderAction, TickAction } from '../actions/render.actions';
 import { PlateService } from '../core/plate.service';
 import { ModeApiValue } from '../distortion-modes/mode-api-value.enum';
+import { PlateActionTypes } from '../actions/plate-model.actions';
 
 @Injectable()
 export class MaterialModeInteractionEffects {
@@ -64,7 +65,6 @@ export class MaterialModeInteractionEffects {
         }
       }
     )
-
 
   @Effect() modelInputChange: Observable<Action> = this.actions$
       .ofType(ModelActionTypes.MODEL_INPUTS_CHANGE)
