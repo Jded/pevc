@@ -1,7 +1,7 @@
 import { Action } from '@ngrx/store';
 import { MaterialActionTypes } from '../actions/material.action';
 
-export const materialOptionsReducer = (state: object[] = [], action: Action) => {
+export function materialOptionsReducer (state: object[] = [], action: Action) {
   let newState;
   switch (action.type) {
     case MaterialActionTypes.UPDATE_MATERIAL:

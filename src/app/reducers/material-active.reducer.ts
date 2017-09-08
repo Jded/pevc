@@ -8,7 +8,7 @@ import { ModelActionTypes } from '../actions/model.actions';
 import { DistortionMode } from '../distortion-modes/distortion-mode';
 import { Material } from '../materials/material';
 
-export const materialActiveReducer = (state: number = Quartz.id, action: Action) => {
+export function materialActiveReducer (state: number = Quartz.id, action: Action) {
 
   switch (action.type) {
     case MaterialActionTypes.SELECT_ACTIVE_MATERIAL:

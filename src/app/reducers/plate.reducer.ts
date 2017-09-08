@@ -5,7 +5,7 @@ import { PlateService } from '../core/plate.service';
 
 const defaultPlateState: PlateState = Object.assign({}, PlateService.initState)
 
-export const plateReducer = (state: PlateState = defaultPlateState, action: Action) => {
+export function plateReducer (state: PlateState = defaultPlateState, action: Action) {
 
   switch (action.type) {
     case PlateActionTypes.UPDATE_DIMENSIONS:

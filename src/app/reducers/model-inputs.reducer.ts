@@ -9,7 +9,7 @@ override.strain = [[0, 0, 0],
   [0, 0, 0],
   [0, 0, 0]];
 
-export const modelInputsReducer = (state: ModelValueDTO = override, action: Action) => {
+export function modelInputsReducer (state: ModelValueDTO = override, action: Action) {
   switch (action.type) {
     case ModelActionTypes.MODEL_INPUTS_SET:
       return Object.assign(new ModelValueDTO(), state, action.payload );

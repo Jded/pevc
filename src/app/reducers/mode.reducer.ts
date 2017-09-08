@@ -4,7 +4,7 @@ import { ModelActionTypes } from '../actions/model.actions';
 import { ModesEnum } from '../distortion-modes/modes.enum';
 
 
-export const modeReducer = (state: ModesEnum = ModesEnum.PressureOpen, action: Action) => {
+export function modeReducer (state: ModesEnum = ModesEnum.PressureOpen, action: Action) {
 
   switch (action.type) {
     case ModelActionTypes.SELECT_MODE:

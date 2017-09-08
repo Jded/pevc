@@ -9,7 +9,7 @@ const defaultState: RenderParameters = {
   time: 0
 }
 
-export const renderReducer = (state: RenderParameters = defaultState, action: Action) => {
+export function renderReducer (state: RenderParameters = defaultState, action: Action) {
   let override;
   switch (action.type) {
     case RenderActionTypes.RERENDER:
