@@ -59,7 +59,7 @@ const appRoutes = [{ path: 'home', component: HomeComponent },
     CoreModule,
     HomeModule,
     MaterialEditorModule,
-    RouterModule.forRoot(appRoutes),
+    RouterModule.forRoot(appRoutes, {useHash: true}),
     StoreModule.provideStore({
       plate: plateReducer,
       render: renderReducer,
