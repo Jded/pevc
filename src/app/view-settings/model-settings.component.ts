@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angula
 import { ModeFactoryService } from '../core/mode-factory.service';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/Rx'
 import { MaterialManagerService } from '../core/material-manager.service';
 import { RenderParameters } from '../plate-renderer/render-parameters';
 import { TimerStartAction, TimerStopAction } from '../actions/render.actions';

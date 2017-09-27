@@ -96,8 +96,8 @@ export class PlateService extends PlateState {
     return false;
   }
 
-  getScaledTime = function () {
-    return (this.time / Math.pow(10, this.modelValues.timeExpansion - 1));
+  getScaledTime = function (time) {
+    return (this.modelValues.time / Math.pow(10, this.modelValues.timeExpansion - 1));
   }
 
   appendToOutputSet(prop: string, apiValue: ModeApiValue, output: Map<ModeApiValue, ModelValueDTO>) {

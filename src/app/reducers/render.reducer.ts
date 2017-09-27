@@ -6,7 +6,8 @@ const defaultState: RenderParameters = {
   shouldRender: false,
   shouldSwapGeometry: false,
   updateTime: false,
-  time: 0
+  time: 0,
+  scaledTime: 0
 }
 
 export function renderReducer (state: RenderParameters = defaultState, action: Action) {

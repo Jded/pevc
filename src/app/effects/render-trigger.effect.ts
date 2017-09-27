@@ -23,7 +23,7 @@ export class RenderTriggerEffects {
           .takeUntil(this.actions$.ofType(RenderActionTypes.STOP_TIMER))
           .switchMap(() => {
             const time = this.plateService.setTime(Date.now());
-            const scaledTime = this.plateService.getScaledTime();
+            const scaledTime = this.plateService.getScaledTime(time);
             this.outputValueStore$.dispatch(new ModelOutputsChangeAction(this.plateService.getOutputValues()));
             return Observable.of(new TickAction(time, scaledTime))
           });
